@@ -1,0 +1,5 @@
+
+"C:\Program Files\PostgreSQL\9.4\bin\psql.exe" -h localhost -U postgres -d report_manager_database  -p 5432 -f action_json_test.sql 
+
+"C:\Program Files\PostgreSQL\9.4\bin\psql.exe" -h localhost -U postgres -d report_manager_database  -p 5432 -f tests\test_action_json_test.sql -o tests\test_action_json_test.txt
+
