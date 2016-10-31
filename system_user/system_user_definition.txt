@@ -1,0 +1,177 @@
+system_user definition
+
+	The system_user_manager is a microservice exposing the actions (functions) needed to manage the users of a system. These actions change the state of the system_user model.
+	
+	Tnhe system_user_manager microservice will provide all the actions needed to authenticate and authorize a system user. This includes managing he permissions needed to use other microservices actions and objects.
+	
+	The system_user is a "model" which reflects the state of the individual user as they navigate the system.
+		the two basic states are logged out (logged_out) and logged in (logged_in). These are defined by the JSON below
+		
+		system_user	{
+							logged_out: true,
+							logged_in:  false,
+							user_data:  
+									{
+										firstname:
+										lastname:
+										sysuser_id:
+										login:
+									},
+							available_actions: [log_out, do_something_else, etc.]
+						};
+						
+		In the logged_out state only the log_in action is available to the system user.
+		
+		In the logged_in state the log_out action is avalable along with many others  depending on the nature of the system. These actions will be defined as part of the system_user's configuration.
+		
+system_user architecture
+
+	the system_user_manager microservice will be implemented as postgresql functions in the system_user schema of the application database.
+		each function will define an action
+			the action function presents the action to the system_user model which then completes it if it's appropriate to the system_user's state and allowed by the business logic. The state comparison is done inside the function, and all business logic is carried out by the action function or other functions it calls
+			
+	the system_user's configuration, its state, and its available actions will be persisted in the following tables:
+		system_user, system_user_state (holds the current state), system_user_state_history (holds the record of a user's state changes), and system_user_allowed_actions. 
+		The data in these tables will be modifed only by the action functions or the finctions they call; they WON'T BE exposed outside the database
+		
+	The action functions will be exposed only through the system_user_manager API which will  be implemented in a nodejs application. The API can be used by an user agent or other microservices to call the action functions. The system_user_manager will use the Seneca microservices toolkit and the API will defined as Seneca json paterns
+	
+Actions list
+
+	The actions available to the system_user are:
+		add_new_user
+		user_login
+		user_logout
+		change_password
+		change_user_allowed_actions
+		list_user_actions
+		
+	These actions are defined below with their Seneca calling patterns with their input and output json objects
+	
+		add_new_user patterns
+		
+			input pattern
+			{
+				micro_service:	system_user_manager,
+				action:	add_new_user,
+				user_data:	{
+								firstname:
+								lastname:
+								login:
+								password:
+								changing_user_login:
+							}
+			};
+			
+			output json
+			{
+			};
+			
+		user_login patterns
+		
+			input pattern
+			{
+				micro_service:	system_user_manager,
+				action:	user_login,
+				user_data:	{
+								login:
+								password:
+							}
+			};
+			
+			output json
+			{
+				result_indicator:
+				message:
+				sysuser_id:
+				firstname:
+				lastname:
+			}
+		
+		user_logout patterns
+
+			input pattern
+			{
+				micro_service:	system_user_manager,
+				action:	user_logout,
+				user_data:	{
+								login:
+							}
+			};
+			
+			output json
+			{
+				result_indicator:
+				message:
+				login:
+			}
+		
+		change_password patterns
+		
+			input pattern
+			{
+				micro_service:	system_user_manager,
+				action:	change_password,
+				user_data:	{
+								login:
+								new_password:
+							}
+			};
+			
+			output json
+			{
+				result_indicator:
+				message:
+				firstname:
+				lastname:
+				login:
+			}
+			
+		change_user_allowed_actions patterns
+		
+			input pattern
+			{
+				micro_service:	system_user_manager,
+				action:	change_user_allowed_actions,
+				user_data:	{
+								login:
+								service:
+								action:
+								task:	//allow (set system_user_allowed_actions.action_allowed to TRUE) or disallow (set system_user_allowed_actions.action_allowed to FALSE)
+							}
+			};
+			
+			output json
+			{
+				result_indicator:
+				message:
+				login:
+				service:
+				action:
+				action_display_name:
+				allowed:
+			}		
+			
+		list_user_actions patterns
+
+			input pattern
+			{
+				micro_service:	system_user_manager,
+				action:	list_user_actions,
+				user_data:	{
+								login:
+							}
+			};
+			
+			output json
+			{
+				result_indicator:
+				message:
+				login:
+				service:
+				action:
+				action_display_name:
+				allowed:
+			}				
+			
+******************************************************************************
