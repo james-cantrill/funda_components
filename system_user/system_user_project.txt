@@ -1,0 +1,20 @@
+The system_user project
+
+directory layout:
+
+	/system_user
+	
+		/report_manager_database
+			/table_defintions
+				/tests
+			/action_functions
+				/tests
+			/utility_functions
+				/tests
+			
+		/system_user_manager
+			/bin
+			/node_modules
+			/routes
+			/views
+		
