@@ -22,6 +22,8 @@ programs_manager architecture
 			available only to administrators:
 				change_program_user_visibility
 				change_organization_user_visibility
+				enter_edit_program_folders
+				enter_edit_programs
 		Depencencies:
 			programs_manager_manager
 		Schema Name:
