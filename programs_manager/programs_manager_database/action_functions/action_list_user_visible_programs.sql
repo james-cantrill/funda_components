@@ -37,13 +37,13 @@ BEGIN
 
 	_login := ((SELECT _in_data ->> 'login')::text);
 	
-	DROP TABLE IF EXISTS programs;
+	DROP TABLE IF EXISTS programs_list;
 
-	CREATE TEMPORARY TABLE programs (	
+	CREATE TEMPORARY TABLE programs_list (	
 		program	json
 	);
 	
-	INSERT INTO programs (
+	INSERT INTO programs_list (
 		program
 		)
 	SELECT
@@ -58,7 +58,7 @@ BEGIN
 	;
 
 	
-	_programs := (SELECT ARRAY_AGG(program) FROM programs);
+	_programs := (SELECT ARRAY_AGG(program) FROM programs_list);
 
 	IF _programs IS NOT NULL THEN
 		_message := 'Here is the list of programs visible to ' || _login || '.';
