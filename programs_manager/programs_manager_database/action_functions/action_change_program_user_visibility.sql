@@ -77,7 +77,7 @@ BEGIN
 								program_id 
 							FROM programs_manager_schema.system_user_allowed_programs
 							WHERE login = _submited_login
-							  AND  program = _program
+							  AND  program_name = _program
 							);
 							
 		IF _program_id IS NOT NULL THEN	-- the user already has an entry for this program and we can change it
@@ -187,7 +187,7 @@ BEGIN
 				sysuser_id,
 				login,
 				program_id,
-				program,
+				program_name,
 				program_accessible,
 				datetime_program_accessible_changed,
 				changed_by_user_login
