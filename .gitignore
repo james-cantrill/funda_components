@@ -1,0 +1,23 @@
+# ignore all run files
+run_*
+
+# ignore all text files
+*.txt
+
+# ignore all log files
+*.log
+
+#ignore all xls
+*.xls*
+
+# ignore all pdf
+*pdf
+
+*bat
+
+*csv
+
+*ppt*
+
+*log
+
