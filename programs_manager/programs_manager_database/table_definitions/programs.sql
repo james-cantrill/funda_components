@@ -3,8 +3,8 @@ DROP TABLE programs_manager_schema.programs;
 
 CREATE TABLE programs_manager_schema.programs (
 	program_id	integer NOT NULL PRIMARY KEY,
-	program_name	text,
-	organization_id	text,
+	program_name	text NOT NULL,
+	organization_id	text NOT NULL,
 	coc_code	text  NOT NULL,
 	containing_folder_name	text NOT NULL,
 	datetime_program_changed	timestamp without time zone NOT NULL,
