@@ -48,6 +48,7 @@ AS $$
 
 DECLARE
 		
+	_integer_var	integer;
 	_out_json json;
 	_message	text;
 	
@@ -60,6 +61,22 @@ DECLARE
 	
 BEGIN
 
+	DROP TABLE IF EXISTS allowed_programs_data;
+
+	CREATE TEMPORARY TABLE allowed_programs_data (
+		node_type	text,	
+		id	text,
+		parent	text,
+		text	text,
+		icon	text
+	);	
+
+	DROP TABLE IF EXISTS json_list_data;
+
+	CREATE TEMPORARY TABLE json_list_data (
+		json_entry	text
+	);
+	
 	_requesting_login := ((SELECT _in_data ->> 'login')::text);
 	
 	-- Determine if the requesting user is authorized
@@ -77,10 +94,40 @@ BEGIN
 	
 	IF _authorized_result  THEN
 	
+		_integer_var := (SELECT * FROM programs_manager_schema.pop_allowed_programs (_requesting_login));
+	
+		INSERT INTO json_list_data (
+			json_entry
+			)
+		SELECT
+			row_to_json (program_row)
+		FROM (	SELECT DISTINCT
+					id,
+					CASE	WHEN parent IS NULL THEN '#'
+							ELSE parent
+					END,
+					text,
+					CASE	WHEN icon IS NULL AND node_type = 'Program' THEN 'jstree-file'
+							ELSE icon
+					END
+				FROM	allowed_programs_data
+		  ) program_row
+		;
+		
+		_data := (SELECT ARRAY (SELECT json_entry FROM json_list_data ));
+
+ 
+		_message := 'Here are the programs. ' ;
+		
+		_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Success',
+							'message', _message,
+							'data', _data
+							));	
 	
 	ELSE	-- user isn't authorized to enter or edit reports
 	
-		_message := 'The user ' || _requesting_login || ' IS NOT Authorized to view data from the shystems programs.';
+		_message := 'The user ' || _requesting_login || ' IS NOT Authorized to view data from the systems programs.';
 		
 		_out_json :=  (SELECT json_build_object(
 							'result_indicator', 'Failure',
