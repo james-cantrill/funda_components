@@ -7,7 +7,7 @@ CREATE TABLE programs_manager_schema.system_user_allowed_programs (
 	sysuser_id	uuid NOT NULL,
 	login	text NOT NULL,
 	program_id	integer NOT NULL,
-	program	text NOT NULL,
+	program_name	text NOT NULL,
 	program_accessible	boolean NOT NULL,
 	datetime_program_accessible_changed	timestamp without time zone NOT NULL,
 	changed_by_user_login	text NOT NULL,
