@@ -31,8 +31,15 @@ module.exports = function programs_manager_api( options ) {
 	
 	this.add({role:'programs_manager_api', cmd:'get_one_row'}, get_organizations);
 	
-
+	this.add({role:'programs_manager_api', cmd:'list_user_visible_programs'}, list_programs);
 	
+	this.add({role:'programs_manager_api', cmd:'list_user_visible_organizations'}, list_organizations);
+	
+
+	this.add({role:'programs_manager_api', cmd:'change_program_user_visibility'}, change_program_visibility);
+	
+	this.add({role:'programs_manager_api', cmd:'change_organization_user_visibility'}, change_organization_visibility);
+
 	this.add( {init:'programs_manager_api'}, function init( args, done ) {
 		setTimeout( function() {
 		  done();
@@ -56,6 +63,55 @@ module.exports = function programs_manager_api( options ) {
 		
 	};
 
+	function list_programs (msg, done) {
+		//console.log (msg._in_data);
+		var result = db.func('programs_manager_schema.action_list_user_visible_programs_jstree', msg._in_data)
+			.then (function (data) {
+				done(null, data);
+			})
+			.catch (function (error) {
+				console.log("ERROR:", error); // print the error;
+			});
+		
+	};
 
+	function list_organizations (msg, done) {
+		//console.log (msg._in_data);
+		var result = db.func('programs_manager_schema.action_list_user_visible_organizations', msg._in_data)
+			.then (function (data) {
+				done(null, data);
+			})
+			.catch (function (error) {
+				console.log("ERROR:", error); // print the error;
+			});
+		
+	};
+
+	function change_program_visibility (msg, done) {
+		console.log (msg._in_data);
+		var result = db.func('programs_manager_schema.action_change_program_user_visibility', msg._in_data)
+			.then (function (data) {
+				done(null, data);
+			})
+			.catch (function (error) {
+				console.log("ERROR:", error); // print the error;
+			});
+		
+	};
+	
+	function change_organization_visibility (msg, done) {
+		//console.log (msg._in_data);
+		var result = db.func('programs_manager_schema.action_change_organization_user_visibility', msg._in_data)
+			.then (function (data) {
+				done(null, data);
+			})
+			.catch (function (error) {
+				console.log("ERROR:", error); // print the error;
+			});
+		
+	};
+	
+
+	
 	
 }; // END module.exports = function programs_manager_api( options )
