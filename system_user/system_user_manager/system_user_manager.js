@@ -6,7 +6,7 @@ var pgp = require('pg-promise')({
 });
 
 // Preparing the connection details:
-var cn = "postgres://jcantrill:0m!tbdfom5@localhost:5432/report_manager_database";
+var cn = "postgres://jcantrill:tamaceaae76@localhost:5432/report_manager_database";
 
 // Creating a new database instance from the connection details:
 var db = pgp(cn);
@@ -32,11 +32,11 @@ module.exports = function system_user_manager( options ) {
 	this.add({role:'system_user_manager', cmd:'get_one_row'}, get_one_row);
 	
 	this.add({role:'system_user_manager', cmd:'add_one_user'}, function (msg, respond) {
- 		//console.log ('In add_one_user');
-		//console.log (msg._in_data);
+ 		console.log ('In add_one_user');
+		console.log (msg._in_data);
 		db.func('system_user_schema.action_add_new_user', msg._in_data)
 		.then(function (data) {
-			//console.log("DATA:", data); // print data;
+			console.log("DATA:", data); // print data;
 			respond (null, data);
 		})
 		.catch(function (error) {
@@ -45,11 +45,11 @@ module.exports = function system_user_manager( options ) {
 	});
 
 	this.add({role:'system_user_manager', cmd:'user_login'}, function (msg, respond) {
- 		//console.log ('In add_one_user');
-		//console.log (msg._in_data);
+ 		console.log ('In user_login');
+		console.log (msg._in_data);
 		db.func('system_user_schema.action_user_login', msg._in_data)
 		.then(function (data) {
-			//console.log("DATA:", data); // print data;
+			console.log("DATA:", data); // print data;
 			respond (null, data);
 		})
 		.catch(function (error) {
