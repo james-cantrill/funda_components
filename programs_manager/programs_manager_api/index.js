@@ -24,6 +24,7 @@ router.get('/programs_manager/test', function (req, res) {
  });
  
  router.get('/programs_manager/get_one_row', function (req, res) {
+	console.log ("In /programs_manager/get_one_row");
 	act ({role:'programs_manager_api', cmd:'get_one_row'})
 	  .then(function (result) {
 		res.send (JSON.stringify (result));
@@ -33,19 +34,12 @@ router.get('/programs_manager/test', function (req, res) {
 		console.log("ERROR:", err); 
 	  });
  });
-
-/*router.get('/system_user_manager/add_one_user', function (req, res) {
-	//console.log(req.query);
-	//var _in_data = req.query;
-	//console.log(_in_data);
-	act ({  role:'system_user_manager', 
-	        cmd:'add_one_user', 
-			_in_data: {
-					firstname: req.query.firstname,
-					lastname: req.query.lastname,
-					login: req.query.login,
-					password:  req.query.password,
-					changing_user_login: req.query.changing_user_login
+ 
+router.get('/programs_manager/list_user_visible_programs', function (req, res) {
+	act ({	role:'programs_manager_api', 
+			cmd:'list_user_visible_programs',
+			_in_data:	{
+						login: req.query.login
 			}
 		})
 	  .then(function (result) {
@@ -53,10 +47,63 @@ router.get('/programs_manager/test', function (req, res) {
 	  })
 	  .catch(function (err) {
 		console.log("ERROR:", err); 
-		res.send ("ERROR:", err);
 	  });
-});
-*/	  
+ });
+
+router.get('/programs_manager/list_user_visible_organizations', function (req, res) {
+	act ({	role:'programs_manager_api', 
+			cmd:'list_user_visible_organizations',
+			_in_data:	{
+						login: req.query.login
+			}
+		})
+	  .then(function (result) {
+		res.send (JSON.stringify (result));
+	  })
+	  .catch(function (err) {
+		console.log("ERROR:", err); 
+	  });
+ });
+
+router.get ('/programs_manager/change_program_user_visibility', function (req, res) {
+	console.log ("In /programs_manager/change_program_user_visibility");
+	act ({	role:'programs_manager_api', 
+			cmd:'change_program_user_visibility',
+			_in_data:	{
+						login: req.query.login,
+						service: req.query.service,
+						program: req.query.program,
+						task: req.query.task,
+						changing_user_login: req.query.changing_user_login
+			}
+		})
+	  .then(function (result) {
+		res.send (JSON.stringify (result));
+	  })
+	  .catch(function (err) {
+		console.log("ERROR:", err); 
+	  });
+ });
+
+router.get('/programs_manager/change_organization_user_visibility', function (req, res) {
+	act ({	role:'programs_manager_api', 
+			cmd:'change_organization_user_visibility',
+			_in_data:	{
+						login: req.query.login,
+						service: req.query.service,
+						organization_name: req.query.organization_name,
+						task: req.query.task,
+						changing_user_login: req.query.changing_user_login
+			}
+		})
+	  .then(function (result) {
+		res.send (JSON.stringify (result));
+	  })
+	  .catch(function (err) {
+		console.log("ERROR:", err); 
+	  });
+ });
+ 
 
 
 
