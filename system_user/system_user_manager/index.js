@@ -35,7 +35,7 @@ router.get('/system_user_manager/test', function (req, res) {
  });
 
 router.get('/system_user_manager/add_one_user', function (req, res) {
-	//console.log(req.query);
+	console.log(req.query);
 	//var _in_data = req.query;
 	//console.log(_in_data);
 	act ({  role:'system_user_manager', 
@@ -58,6 +58,7 @@ router.get('/system_user_manager/add_one_user', function (req, res) {
 });
 	  
 router.get('/system_user_manager/user_login', function (req, res) {
+	console.log(req.query);
 	act ({  role:'system_user_manager', 
 	        cmd:'user_login', 
 			_in_data: {
