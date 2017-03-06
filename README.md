@@ -15,12 +15,13 @@ The component's schema will include the pgplsql action fuinctions, tables needed
 The System User Manager exposes the actions (functions) needed to authenticate and authorize a system user. This includes managing the permissions needed to use other microservices actions and objects.
 
 The actions exposed by the System User Manager are:
-...*add_new_user
-...*user_login
-...*user_logout
-...*change_password
-...*change_user_allowed_actions
-...*list_user_actions
+
+1. add_new_user
+2. user_login
+3. user_logout
+4. change_password
+5. change_user_allowed_actions
+6. list_user_actions
 
 ## Program or Business Unit Manager
 
