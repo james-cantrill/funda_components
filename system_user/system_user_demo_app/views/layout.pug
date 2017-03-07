@@ -1,0 +1,15 @@
+doctype html
+
+html
+    head
+        link(rel='stylesheet', href='./stylesheets/style.css')
+        link(rel='stylesheet', href='./stylesheets/jquery-ui.css')
+        script(src='./javascripts/jquery.js')
+        script(src='./javascripts/jquery-ui.js')
+        script.
+            $( function() {
+                $('#datepicker').datepicker();
+            });
+    body
+        h1= 'Demonstration of the System User Manager Component'
+        block content
