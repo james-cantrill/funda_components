@@ -4,11 +4,11 @@ block content
     h1= title
 
     div
-        form(action="/login" method="get" class="form-signin")
+        form(action="/system_user_manager/user_login" method="get" class="form-signin")
             label= 'Username'
             br
             br
-            input(type="text" name="username" placeholder="" class="input-block-level")
+            input(type="text" name="login" placeholder="" class="input-block-level")
             br
             br
             label= 'Password'
