@@ -1,12 +1,18 @@
 "use strict";
 
+//load the application configuration
+var app_config = require ('./public/javascript/application_config.js');
+
 // Loading and initializing the library:
 var pgp = require('pg-promise')({
     // Initialization Options
 });
 
 // Preparing the connection details:
-var cn = "postgres://jcantrill:tamaceaae76@localhost:5432/report_manager_database";
+var cn = 'postgres://' + app_config.db_login + ':' + app_config.db_password + '@' + app_config.db_host + ':' + app_config.db_port + '/'  + app_config.database_name;
+console.log (cn);
+
+//var cn = "postgres://jcantrill:tamaceaae76@localhost:5432/report_manager_database";
 
 // Creating a new database instance from the connection details:
 var db = pgp(cn);
