@@ -7,7 +7,7 @@ var web = require('seneca-web');
 var Promise = require('bluebird');
 
 var act = Promise.promisify(seneca.act,  {context: seneca});
-seneca.use( require('../system_user_manager/system_user_manager.js') );
+seneca.use( require('./system_user_manager.js') );
 
 router.get('/', function(req, res){  
   res.render('index', {
@@ -25,6 +25,8 @@ router.get('/system_user_manager/user_login', function (req, res) {
 			}
 		})
 	  .then (function (result) {
+		console.log (JSON.stringify (result));
+		console.log ('result = ' + result.action_user_login);
 		res.send (JSON.stringify (result));
 	  })
 	  .catch (function (err) {
