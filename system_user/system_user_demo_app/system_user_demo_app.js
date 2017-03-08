@@ -14,4 +14,4 @@ app.use('/', routes);
 app.use (express.static ('public'));
 
 app.listen(3000);
-console.log('Express server listening on port 4000');
+console.log('Express server listening on port 3000');
