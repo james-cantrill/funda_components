@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1= title
+    h1= name
+    
+    div
+        form(action="/enter_user_data" method="get" class="enter_unsheltered")
+            button(type="submit" class="btn-medium") Enter a New User
+        br
+        
+        form(action="/system_user_manager/user_logout" method="get" class="logout")
+            button(type="submit" class="btn-medium") Log Out

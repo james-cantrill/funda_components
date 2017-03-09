@@ -1,0 +1,36 @@
+extends layout
+
+block content
+    h1= title
+
+    div
+        form(action="/system_user_manager/add_one_user" method="get" class="save_person")
+             
+            label First Name
+            input(type="text" id="firstname" value=firstname name="firstname")
+            br
+            br
+            label Last Name
+            input(type="text" id="lastname" value=lastname name="lastname")
+            br
+            br
+            label User Login 
+            input(type="text" id="login" value=login name="login")
+            br
+            br
+            label Password
+            input(type="text" id="password" value=password name="password")
+            br
+            br
+            
+  
+
+            br
+            br
+            button(type="submit" class="btn-small") Save
+            br
+            br
+        
+        form(action="/system_user_manager/user_logout" method="get" class="logout")
+            button(type="submit" class="btn-medium") Log Out
+
