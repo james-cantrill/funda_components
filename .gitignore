@@ -13,8 +13,6 @@ run_*
 # ignore all pdf
 *pdf
 
-*bat
-
 *csv
 
 *ppt*
