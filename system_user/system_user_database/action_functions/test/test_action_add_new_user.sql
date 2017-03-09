@@ -9,12 +9,9 @@
 				}
 */
 
-DELETE  FROM system_user_schema.system_users;
-DELETE  FROM system_user_schema.system_users_history;
-DELETE  FROM system_user_schema.system_user_state;
-DELETE  FROM system_user_schema.system_user_state_history;
-DELETE  FROM system_user_schema.system_user_allowed_actions;
-DELETE  FROM system_user_schema.system_user_allowed_actions_history;
+
+--entering the first test using the login 'system' it should pass';
+SELECT * FROM system_user_schema.action_add_new_user ('{"firstname": "Roger", "lastname": "Fitzroger",  "password":"spade", "changing_user_login": "muser"}');
 
 --entering the first test using the login 'system' it should pass';
 SELECT * FROM system_user_schema.action_add_new_user ('{"firstname": "Roger", "lastname": "Fitzroger", "login": "opal", "password":"spade", "changing_user_login": "muser"}');

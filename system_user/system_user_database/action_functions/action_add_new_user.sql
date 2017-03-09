@@ -65,93 +65,103 @@ BEGIN
 		_submited_firstname := (SELECT _in_data ->> 'firstname')::text;
 		_submited_lastname := (SELECT _in_data ->> 'lastname')::text;
 		
-		
-		
-		_sysuser_id := (	SELECT 
-								sysuser_id 
-							FROM system_user_schema.system_users 
-							WHERE login = lower ((SELECT _in_data ->> 'login'))
-							);
-		
-		IF _sysuser_id IS NULL THEN	-- the entered login doesn't exist in the system
-		
-			INSERT INTO system_user_schema.system_users (
-				login,
-				password,
-				firstname,
-				lastname,
-				datetime_user_changed,
-				changing_user_login
-				)
-			SELECT
-				lower ((SELECT _in_data ->> 'login')::text),
-				(SELECT crypt((SELECT _in_data ->> 'password')::text, gen_salt('bf', 8))),
-				(SELECT _in_data ->> 'firstname')::text,
-				(SELECT _in_data ->> 'lastname')::text,
-				LOCALTIMESTAMP (0),
-				(SELECT _in_data ->> 'changing_user_login')::text
-			;
-			
-			_sysuser_id := (SELECT sysuser_id FROM system_user_schema.system_users WHERE login = lower((SELECT _in_data ->> 'login')));
-			
-			INSERT INTO system_user_schema.system_user_state (
-				sysuser_id,
-				user_state,
-				datetime_state_started
-				)
-			SELECT
-				_sysuser_id,
-				'Logged Out',
-				LOCALTIMESTAMP (0)
-			;
-			
-			--set up all system acttions as not allowed for this user; they will edikted, allowed later in  an otnher function
-			INSERT INTO system_user_schema.system_user_allowed_actions (
-				sysuser_id,
-				login,
-				service,
-				action,
-				action_display_name,
-				action_allowed,
-				changing_user_login,
-				datetime_action_allowed_changed
-				)
-			SELECT
-				_sysuser_id,
-				lower ((SELECT _in_data ->> 'login')::text),
-				service,
-				action,
-				action_display_name,
-				false,
-				_calling_login,
-				LOCALTIMESTAMP (0)
-			FROM	system_user_schema.system_actions
-			;
-				
-
-
-			_message := (SELECT 'The user, ' || _submited_firstname || ' ' || _submited_lastname || ', has been added to the system.');
-			
-			 _out_json :=  (SELECT json_build_object(
-								'result_indicator', 'Successs',
-								'message', _message,
-								'sysuser_id', _sysuser_id,
-								'firstname', (SELECT _in_data ->> 'firstname')::text,
-								'lastname', (SELECT _in_data ->> 'lastname')::text, 
-								'login', lower ((SELECT _in_data ->> 'login')::text))
-								);
-
-		ELSE	-- the entered login exists in the system and an error message will be returned
-			_message := (SELECT 'The submitted login, ' || (SELECT _in_data ->> 'login')::text || ', already exists, please choose another.') ;
-
+		IF (SELECT _in_data ->> 'firstname')::text IS NULL OR (SELECT _in_data ->> 'lastname')::text IS NULL OR (SELECT _in_data ->> 'login')::text IS NULL OR (SELECT _in_data ->> 'password')::text IS NULL THEN -- data is incomplete		
+			_message := (SELECT 'The data is incomplete as submitted so the USER CAN NOT be entered, please resubmit with complete data.') ;
 			_out_json :=  (SELECT json_build_object(
-								'result_indicator', 'Failure',
-								'message', _message,
-								'firstname', (SELECT _in_data ->> 'firstname')::text,
-								'lastname', (SELECT _in_data ->> 'lastname')::text, 
-								'login', lower ((SELECT _in_data ->> 'login'))::text)
+					'result_indicator', 'Failure',
+					'message', _message,
+					'firstname', (SELECT _in_data ->> 'firstname')::text,
+					'lastname', (SELECT _in_data ->> 'lastname')::text, 
+					'login', lower ((SELECT _in_data ->> 'login'))::text)
+					);
+		ELSE
+			_sysuser_id := (	SELECT 
+									sysuser_id 
+								FROM system_user_schema.system_users 
+								WHERE login = lower ((SELECT _in_data ->> 'login'))
 								);
+			
+			IF _sysuser_id IS NULL THEN	-- the entered login doesn't exist in the system
+			
+				INSERT INTO system_user_schema.system_users (
+					login,
+					password,
+					firstname,
+					lastname,
+					datetime_user_changed,
+					changing_user_login
+					)
+				SELECT
+					lower ((SELECT _in_data ->> 'login')::text),
+					(SELECT crypt((SELECT _in_data ->> 'password')::text, gen_salt('bf', 8))),
+					(SELECT _in_data ->> 'firstname')::text,
+					(SELECT _in_data ->> 'lastname')::text,
+					LOCALTIMESTAMP (0),
+					(SELECT _in_data ->> 'changing_user_login')::text
+				;
+				
+				_sysuser_id := (SELECT sysuser_id FROM system_user_schema.system_users WHERE login = lower((SELECT _in_data ->> 'login')));
+				
+				INSERT INTO system_user_schema.system_user_state (
+					sysuser_id,
+					user_state,
+					datetime_state_started
+					)
+				SELECT
+					_sysuser_id,
+					'Logged Out',
+					LOCALTIMESTAMP (0)
+				;
+				
+				--set up all system acttions as not allowed for this user; they will edikted, allowed later in  an otnher function
+				INSERT INTO system_user_schema.system_user_allowed_actions (
+					sysuser_id,
+					login,
+					service,
+					action,
+					action_display_name,
+					action_allowed,
+					changing_user_login,
+					datetime_action_allowed_changed
+					)
+				SELECT
+					_sysuser_id,
+					lower ((SELECT _in_data ->> 'login')::text),
+					service,
+					action,
+					action_display_name,
+					false,
+					_calling_login,
+					LOCALTIMESTAMP (0)
+				FROM	system_user_schema.system_actions
+				;
+					
 
+
+				_message := (SELECT 'The user, ' || _submited_firstname || ' ' || _submited_lastname || ', has been added to the system.');
+				
+				 _out_json :=  (SELECT json_build_object(
+									'result_indicator', 'Successs',
+									'message', _message,
+									'sysuser_id', _sysuser_id,
+									'firstname', (SELECT _in_data ->> 'firstname')::text,
+									'lastname', (SELECT _in_data ->> 'lastname')::text, 
+									'login', lower ((SELECT _in_data ->> 'login')::text))
+									);
+
+			ELSE	-- the entered login exists in the system and an error message will be returned
+				_message := (SELECT 'The submitted login, ' || (SELECT _in_data ->> 'login')::text || ', already exists, please choose another.') ;
+
+				_out_json :=  (SELECT json_build_object(
+									'result_indicator', 'Failure',
+									'message', _message,
+									'firstname', (SELECT _in_data ->> 'firstname')::text,
+									'lastname', (SELECT _in_data ->> 'lastname')::text, 
+									'login', lower ((SELECT _in_data ->> 'login'))::text)
+									);
+
+			END IF;
+			
 		END IF;
 		
 	ELSE	-- calling user is not authorized
