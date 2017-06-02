@@ -136,8 +136,14 @@ BEGIN
 				FROM	system_user_schema.system_actions
 				;
 					
-
-
+				UPDATE system_user_schema.system_user_allowed_actions
+				SET	action_allowed = TRUE,
+						datetime_action_allowed_changed = LOCALTIMESTAMP (0)
+				WHERE	login = lower ((SELECT _in_data ->> 'login'))::text
+				  AND	service = 'system_user'
+				  AND	action = 'user_login'
+				;
+				
 				_message := (SELECT 'The user, ' || _submited_firstname || ' ' || _submited_lastname || ', has been added to the system.');
 				
 				 _out_json :=  (SELECT json_build_object(

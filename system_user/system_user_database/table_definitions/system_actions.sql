@@ -12,5 +12,7 @@ CREATE TABLE system_user_schema.system_actions (
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('system_user', 'add_new_user', 'Add User');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('system_user', 'enter_edit_allowed_actions', 'Allowed Actions');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('system_user', 'change_password', 'Change Password');
+INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('system_user', 'list_user_actions', 'List Users');
+INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('system_user', 'user_login', 'User Login');
 
 

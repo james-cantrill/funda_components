@@ -64,7 +64,7 @@ BEGIN
 								'authorized', _is_authorized
 								));
 									
-	ELSIF _user_state = 'Logged Out' THEN
+	ELSIF _user_state = 'Logged Out' AND _action != 'user_login' THEN
 		_message  := 'The user with the login ' || _login || ' is not logged into the system';
 		_is_authorized := FALSE;
 		_out_json :=  (SELECT json_build_object(
@@ -75,7 +75,7 @@ BEGIN
 								'action', _action,
 								'authorized', _is_authorized
 								));	
-	ELSIF _user_state = 'Logged In' THEN
+	ELSIF _user_state = 'Logged In' OR _action = 'user_login' THEN
 	
 		_is_authorized := (SELECT	action_allowed
 							FROM	system_user_schema.system_user_allowed_actions

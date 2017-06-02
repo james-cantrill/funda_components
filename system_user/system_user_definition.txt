@@ -40,10 +40,10 @@ Actions list
 
 	The actions available to the system_user are:
 		add_new_user
-		user_login
+		user_login	users are created with login authority but it can be removed by the enter_edit_allowed_actions action
 		user_logout
 		change_password
-		change_user_allowed_actions
+		enter_edit_allowed_actions
 		list_user_actions
 		
 	These actions are defined below with their Seneca calling patterns with their input and output json objects
@@ -172,6 +172,27 @@ Actions list
 				action:
 				action_display_name:
 				allowed:
-			}				
+			}		
+			
+		delete_system_user	
+		
+			input_pattern
+			{
+				micro_service:	system_user_manager,
+				action:	delete_system_user,
+				user_data:	{
+								login:
+							}
+			}
+			
+			output json
+			{
+					result_indicator:
+					message:
+					sysuser_id:
+					firstname:
+					lastname:
+					login:
+			}
 			
 ******************************************************************************
