@@ -96,6 +96,37 @@ router.get('/system_user_manager/add_one_user', function (req, res) {
 	  });
 });	//END router.get('/system_user_manager/add_one_user',
 
+router.get('/system_user_manager/change_password', function (req, res) {
+	
+	act ({  role:'system_user_manager', 
+	        cmd:'change_password', 
+			_in_data: {
+					login: req.query.login,
+					new_password:  req.query.new_password,
+					changing_user_login: user_login
+			}
+		})
+	  .then(function (result) {
+		var returned_json = JSON.parse (JSON.stringify (result));
+		var out_data = returned_json[0].change_password;
+		
+		if (out_data.result_indicator == 'Failure') {
+			res.render ('user_data', {
+				title: out_data.message,
+				login:	req.query.login			});
+		} else {
+			res.render ('home', {
+						title: 'User password is changed.'
+					});
+		};
+
+	  })
+	  .catch(function (err) {
+		console.log("ERROR:", err); 
+		res.send ("ERROR:", err);
+	  });
+});	//END router.get('/system_user_manager/add_one_user',
+
 router.get('/system_user_manager/user_logout', function (req, res) {
 	act ({  role:'system_user_manager', 
 	        cmd:'user_logout', 
