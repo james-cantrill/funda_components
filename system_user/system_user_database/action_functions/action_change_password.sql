@@ -63,7 +63,7 @@ BEGIN
 	IF _calling_user_state  = 'Logged In' THEN
 		IF _submited_login = _calling_login THEN --the user is changing their own password, which is always authorized
 			_authorized_result := TRUE;
-		ELSE	-- the calling user muist be authorized
+		ELSE	-- the calling user must be authorized
 			
 			_input_authorized_json :=	(SELECT json_build_object(
 									'login', _calling_login,
