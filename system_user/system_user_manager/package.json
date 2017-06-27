@@ -1,6 +1,6 @@
 {
   "name": "system_user_manager",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "The system_user_manager is a microservice exposing the actions (functions) needed to manage the users of a system. These actions change the state of the system_user model",
   "private": true,
   "scripts": {
