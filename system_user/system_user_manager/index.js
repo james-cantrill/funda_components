@@ -7,7 +7,7 @@ var Promise = require('bluebird');
 
 var act = Promise.promisify(seneca.act,  {context: seneca});
 seneca.use( require('./system_user_manager.js') );
-
+//dummy cpomment
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'System User Manager' });
