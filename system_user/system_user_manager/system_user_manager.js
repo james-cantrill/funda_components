@@ -9,6 +9,7 @@ var pgp = require('pg-promise')({
 });
 
 // Preparing the connection details:
+// Need to change
 var cn = 'postgres://' + app_config.db_login + ':' + app_config.db_password + '@' + app_config.db_host + ':' + app_config.db_port + '/'  + app_config.database_name;
 
 // Creating a new database instance from the connection details:
