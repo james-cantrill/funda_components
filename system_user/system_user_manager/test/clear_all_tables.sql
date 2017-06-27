@@ -1,5 +1,5 @@
 
-
+--dummy
 -- clear all tables
 DELETE  FROM system_user_schema.system_users;
 DELETE  FROM system_user_schema.system_user_state;
