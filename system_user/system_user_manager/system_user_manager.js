@@ -95,6 +95,18 @@ module.exports = function system_user_manager( options ) {
 		});
 	});
 	
+// list_users
+	this.add({role:'system_user_manager', cmd:'list_users'}, function (msg, respond) {
+ 		db.func('system_user_schema.action_list_users', msg._in_data)
+		.then(function (data) {
+			//console.log("DATA:", data); // print data;
+			respond (null, data);
+		})
+		.catch(function (error) {
+			console.log("ERROR:", error.message || error); // print the error;
+		});
+	});
+	
 	this.add( {init:'system_user_manager'}, function init( args, done ) {
 		setTimeout( function() {
 		  done();
