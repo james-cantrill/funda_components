@@ -106,6 +106,20 @@ module.exports = function system_user_manager( options ) {
 			console.log("ERROR:", error.message || error); // print the error;
 		});
 	});
+
+// list_user_actions
+	this.add({role:'system_user_manager', cmd:'list_user_actions'}, function (msg, respond) {
+ 		db.func('system_user_schema.action_list_actions_for_a_user', msg._in_data)
+		.then(function (data) {
+			//console.log("DATA:", data); // print data;
+			respond (null, data);
+		})
+		.catch(function (error) {
+			console.log("ERROR:", error.message || error); // print the error;
+		});
+	});
+	
+
 	
 	this.add( {init:'system_user_manager'}, function init( args, done ) {
 		setTimeout( function() {
