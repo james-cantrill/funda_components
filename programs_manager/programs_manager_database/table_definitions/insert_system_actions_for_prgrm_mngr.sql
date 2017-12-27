@@ -6,6 +6,6 @@ INSERT INTO system_user_schema.system_actions (service, action, action_display_n
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'change_program_user_visibility', 'Program Visibility');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'list_user_visible_programs', 'Program Visibility');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'list_user_visible_organizations', 'Program Visibility');
-INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'enter_edit_program_folders', 'Program Visibility');
+INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'enter_edit_organization_level', 'Program Visibility');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'enter_edit_programs', 'Program Visibility');
 

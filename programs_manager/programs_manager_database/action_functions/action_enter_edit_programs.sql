@@ -5,7 +5,7 @@
 --					program_name:
 --					organization_id:
 --					coc_code:
---					containing_folder_name:
+--					containing_level_name:
 --					changed_by_user_login:
 --				}
 			
@@ -18,7 +18,7 @@
 --					program_name:
 --					organization_id:
 --					coc_code:
---					containing_folder_name:
+--					containing_level_name:
 --					changed_by_user_login:
 --				}
 
@@ -38,10 +38,10 @@ DECLARE
 	_old_program_name	text;
 	_program_name_updateable	boolean;
 	
-	_containing_folder_id	uuid;
-	_containing_folder_exists	boolean;
-	_old_containing_folder_name	text;
-	_containing_folder_name_updateable	boolean;
+	_containing_level_id	uuid;
+	_containing_level_exists	boolean;
+	_old_containing_level_name	text;
+	_containing_level_name_updateable	boolean;
 	
 	
 	
@@ -69,7 +69,7 @@ BEGIN
 	IF _authorized_result  THEN
 	
 		-- check if the submitted data is complete
-		IF (SELECT _in_data ->> 'program_id')::text IS NULL OR (SELECT _in_data ->> 'program_name')::text IS NULL OR (SELECT _in_data ->> 'organization_id')::text IS NULL OR (SELECT _in_data ->> 'coc_code')::text IS NULL OR (SELECT _in_data ->> 'containing_folder_name')::text IS NULL OR (SELECT _in_data ->> 'changed_by_user_login')::text IS NULL THEN -- data is incomplete
+		IF (SELECT _in_data ->> 'program_id')::text IS NULL OR (SELECT _in_data ->> 'program_name')::text IS NULL OR (SELECT _in_data ->> 'organization_id')::text IS NULL OR (SELECT _in_data ->> 'coc_code')::text IS NULL OR (SELECT _in_data ->> 'containing_level_name')::text IS NULL OR (SELECT _in_data ->> 'changed_by_user_login')::text IS NULL THEN -- data is incomplete
 		
 			_message := (SELECT 'The data is incomplete as submitted so the report CAN NOT be entered or edited, please resubmit with complete data.') ;
 			_out_json :=  (SELECT json_build_object(
@@ -79,7 +79,7 @@ BEGIN
 								'program_name', (SELECT _in_data ->> 'program_name')::text,
 								'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 								'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-								'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+								'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 								'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 								));		
 								
@@ -98,16 +98,16 @@ BEGIN
 				_insert_or_update := 'update';
 			END IF;
 			
-			-- does the containing folder exist
-			_containing_folder_id :=	(SELECT
-						program_folder_id
-					FROM	programs_manager_schema.program_folders
-					WHERE	program_folder_name = (SELECT _in_data ->> 'containing_folder_name')::text 
+			-- does the containing level exist
+			_containing_level_id :=	(SELECT
+						organization_level_id
+					FROM	programs_manager_schema.organization_level
+					WHERE	organization_level_name = (SELECT _in_data ->> 'containing_level_name')::text 
 					);
-			IF _containing_folder_id IS NULL THEN
-				_containing_folder_exists := FALSE;
+			IF _containing_level_id IS NULL THEN
+				_containing_level_exists := FALSE;
 			ELSE
-				_containing_folder_exists := TRUE;
+				_containing_level_exists := TRUE;
 			END IF;
 			
 			-- is the program name unique
@@ -126,8 +126,8 @@ BEGIN
 
 			IF lower (_insert_or_update) = 'insert' THEN
 				
-				IF NOT _containing_folder_exists THEN 
-					_message := (SELECT 'The program folder with the submitted containing folder name, ' || (SELECT _in_data ->> 'containing_folder_name')::text || ', DOES NOT EXIST so the report CAN NOT be entered, please resubmit with correct data.') ;
+				IF NOT _containing_level_exists THEN 
+					_message := (SELECT 'The program level with the submitted containing level name, ' || (SELECT _in_data ->> 'containing_level_name')::text || ', DOES NOT EXIST so the report CAN NOT be entered, please resubmit with correct data.') ;
 					_out_json :=  (SELECT json_build_object(
 										'result_indicator', 'Failure',
 										'message', _message,
@@ -135,7 +135,7 @@ BEGIN
 										'program_name', (SELECT _in_data ->> 'program_name')::text,
 										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-										'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+										'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 										'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 										));					
 				ELSIF NOT _program_name_unique THEN
@@ -148,18 +148,18 @@ BEGIN
 										'program_name', (SELECT _in_data ->> 'program_name')::text,
 										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-										'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+										'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 										'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 										));	
 								
-				ELSE	-- there is a containing folder and the program name is unique so we insert the program
+				ELSE	-- there is a containing level and the program name is unique so we insert the program
 				
 					INSERT INTO programs_manager_schema.programs (
 						program_id,
 						program_name,
 						organization_id,
 						coc_code,
-						containing_folder_name,
+						containing_level_name,
 						datetime_program_changed,
 						changed_by_user_login
 						)
@@ -168,7 +168,7 @@ BEGIN
 						(SELECT _in_data ->> 'program_name')::text, 
 						(SELECT _in_data ->> 'organization_id')::text,
 						(SELECT _in_data ->> 'coc_code')::text, 
-						(SELECT _in_data ->> 'containing_folder_name')::text,
+						(SELECT _in_data ->> 'containing_level_name')::text,
 						LOCALTIMESTAMP (0),
 						(SELECT _in_data ->> 'changed_by_user_login')::text
 						)
@@ -183,29 +183,29 @@ BEGIN
 										'program_name', (SELECT _in_data ->> 'program_name')::text,
 										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-										'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+										'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 										'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 										));
 											
-				END IF;	-- iS there a containing folder and the program name is unique so we insert the program
+				END IF;	-- iS there a containing level and the program name is unique so we insert the program
 				
 			ELSE -- update the program
 
 				_program_id := ((SELECT _in_data ->> 'program_id')::integer);
 				
-				-- is the containing folder being changed? if so check that it exists before updating
-				_old_containing_folder_name := (SELECT 
-									containing_folder_name 
+				-- is the containing level being changed? if so check that it exists before updating
+				_old_containing_level_name := (SELECT 
+									containing_level_name 
 								FROM programs_manager_schema.programs 
 								WHERE program_id = _program_id
 								);
 								
-				IF _old_containing_folder_name <> (SELECT _in_data ->> 'containing_folder_name')::text THEN
-					IF NOT _containing_folder_exists THEN 
-						_containing_folder_name_updateable := FALSE;
+				IF _old_containing_level_name <> (SELECT _in_data ->> 'containing_level_name')::text THEN
+					IF NOT _containing_level_exists THEN 
+						_containing_level_name_updateable := FALSE;
 					END IF;
 				ELSE
-					_containing_folder_name_updateable := TRUE;
+					_containing_level_name_updateable := TRUE;
 				END IF;
 				
 				-- is the report name being changed? if so check that it exists before updating
@@ -224,8 +224,8 @@ BEGIN
 					_program_name_updateable := TRUE;
 				END IF;
 								
-				IF NOT _containing_folder_name_updateable THEN
-					_message := (SELECT 'The folder with the submitted containing folder name, ' || (SELECT _in_data ->> 'containing_folder_name')::text || ', DOES NOT EXIST so the program CAN NOT be updated, please resubmit with correct data.') ;
+				IF NOT _containing_level_name_updateable THEN
+					_message := (SELECT 'The level with the submitted containing level name, ' || (SELECT _in_data ->> 'containing_level_name')::text || ', DOES NOT EXIST so the program CAN NOT be updated, please resubmit with correct data.') ;
 					_out_json :=  (SELECT json_build_object(
 										'result_indicator', 'Failure',
 										'message', _message,
@@ -233,7 +233,7 @@ BEGIN
 										'program_name', (SELECT _in_data ->> 'program_name')::text,
 										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-										'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+										'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 										'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 										));			
 				
@@ -247,18 +247,18 @@ BEGIN
 										'program_name', (SELECT _in_data ->> 'program_name')::text,
 										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-										'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+										'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 										'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 										));	
 				
-				ELSE	-- there is a containing folder and the program name is unique so we update the program 		
+				ELSE	-- there is a containing level and the program name is unique so we update the program 		
 						
 					UPDATE  programs_manager_schema.programs 
 					SET	program_id = (SELECT _in_data ->> 'program_id')::integer,
 						program_name = (SELECT _in_data ->> 'program_name')::text, 
 						organization_id = (SELECT _in_data ->> 'organization_id')::text,
 						coc_code = (SELECT _in_data ->> 'coc_code')::text, 
-						containing_folder_name = (SELECT _in_data ->> 'containing_folder_name')::text,
+						containing_level_name = (SELECT _in_data ->> 'containing_level_name')::text,
 						datetime_program_changed = LOCALTIMESTAMP (0),
 						changed_by_user_login = (SELECT _in_data ->> 'changed_by_user_login')::text
 					WHERE	program_id = _program_id	
@@ -273,11 +273,11 @@ BEGIN
 									'program_name', (SELECT _in_data ->> 'program_name')::text,
 									'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 									'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-									'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+									'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 									'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 									));
 					
-				END IF;	--IF NOT _containing_folder_name_updateable
+				END IF;	--IF NOT _containing_level_name_updateable
 				
 			END IF;	-- IF lower (_insert_or_update)
 		
@@ -294,7 +294,7 @@ BEGIN
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 							'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-							'containing_folder_name', (SELECT _in_data ->> 'containing_folder_name')::text,
+							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
 							));	
 

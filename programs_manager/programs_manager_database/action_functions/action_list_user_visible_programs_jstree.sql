@@ -37,7 +37,7 @@
 --					message:
 --					data: [{
 --								id:	for folders reportfolders.folder_name for reports reports.report_id
---								parent:	for folders report_folders.parent_folder_name or "#" for root, for reports reports.containing_folder_name
+--								parent:	for folders report_folders.parent_level_name or "#" for root, for reports reports.containing_level_name
 --								text:	for folders reportfolders.folder_display_name for reports reports.report_name
 --					}]
 --				};
