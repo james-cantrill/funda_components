@@ -2,19 +2,28 @@ programs_manager Definition
 
 	programs_manager
 		Definition: 
-			The programs_manager is a microservice exposing the actions (functions) needed to manage the programs, agencies, and continua used in the system's reports. These entities will be imported from the HMIS system being reported on. This component will provide all the actions needed to control the visibility of the continua, agencies, and programs to each system user.
-		Entities managed: 
-			continuum, 
-			agency
-			program
+			The programs_manager is a Funda component exposing the actions (functions) needed to manage an organization's  programs. A program is used by an organization or group of organizations use to organize their transactions and other interactions. In a social service agency a program could be a single funded project providing a defined range of services, in a local government a program could be a single department or a limited project,and in a business a program could be a single business unit. What a program represents depends on how an organization needs to define its business structure.
 			
-programs_manager architecture
+			The programs_manager component uses a Program entity to represent the organizations programs.
+			
+			The programs_manager component uses an Organization entity as the owner of one or more programs. The Organization entity could represent a legal corporation, an association, a professional group or other entities that conduct transactions.
 
-	the programs_manager_manager microservice will be implemented as postgresql functions in the programs_manager schema of the application's database.
-		each function will define an action
-			the action function presents the action to the programs_manager model which then completes it if it's appropriate to the programs_manager's state and allowed by the business logic. The state comparison is done inside the function, and all business logic is carried out by the action function or other functions it calls
+			Since organizations need a flexible way of structuring their programs the programs_manager component uses an intermediate Organizational Level entity to provide the organization's defined structure. 
 			
-	The action functions will be exposed only through the programs_manager_api, an API which will  be implemented in a nodejs application. The API can be used by an user agent or other microservices to call the action functions. The programs_manager_api will use the Seneca microservices toolkit and the API will defined as Seneca json paterns			
+			
+		Entities managed and their visible properties: 
+			organization
+				organization_name	text,
+				organization_description
+				
+			organization_level
+				organization_level_name,
+				organization_level_display_name	
+				organization_level_description
+				
+			program
+				program_name
+				program_description
 
 	Actions exposed:
 			list_user_visible_programs
