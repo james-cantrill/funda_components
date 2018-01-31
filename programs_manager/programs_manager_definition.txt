@@ -1,45 +1,74 @@
-programs_manager Definition
+programs_manager Documentation
 
-	programs_manager
-		Definition: 
-			The programs_manager is a Funda component exposing the actions (functions) needed to manage an organization's  programs. A program is used by an organization or group of organizations use to organize their transactions and other interactions. In a social service agency a program could be a single funded project providing a defined range of services, in a local government a program could be a single department or a limited project,and in a business a program could be a single business unit. What a program represents depends on how an organization needs to define its business structure.
-			
-			The programs_manager component uses a Program entity to represent the organizations programs.
-			
-			The programs_manager component uses an Organization entity as the owner of one or more programs. The Organization entity could represent a legal corporation, an association, a professional group or other entities that conduct transactions.
-
-			Since organizations need a flexible way of structuring their programs the programs_manager component uses an intermediate Organizational Level entity to provide the organization's defined structure. 
-			
-			
-		Entities managed and their visible properties: 
-			organization
-				organization_name	text,
-				organization_description
-				
-			organization_level
-				organization_level_name,
-				organization_level_display_name	
-				organization_level_description
-				
-			program
-				program_name
-				program_description
-
-	Actions exposed:
-			list_user_visible_programs
-			list_user_visible_organizations
-			available only to administrators:
-				change_program_user_visibility
-				change_organization_user_visibility
-				enter_edit_organization_levels
-				enter_edit_programs
-		Depencencies:
-			programs_manager_manager
-		Schema Name:
-			programs_manager_schema
-
-	Action patterns
+Definition: 
+	The programs_manager is a Funda component exposing the actions (functions) needed to manage an organization's  programs. A program is used by an organization or group of organizations use to organize their transactions and other interactions. In a social service agency a program could be a single funded project providing a defined range of services, in a local government a program could be a single department or a limited project,and in a business a program could be a single business unit. What a program represents depends on how an organization needs to define its business structure.
 	
+	The programs_manager component uses a Program entity to represent the organizations programs.
+	
+	The programs_manager component uses an Organization entity as the owner of one or more programs. The Organization entity could represent a legal corporation, an association, a professional group or other entities that conduct transactions.
+
+	Since organizations need a flexible way of structuring their programs the programs_manager component uses an intermediate Organizational Level entity to provide the organization's defined structure. 
+	
+	
+Entities managed and their visible properties: 
+	organization
+		organization_name	text,
+		organization_description
+		
+	organization_level
+		organization_level_name,
+		organization_level_display_name	
+		organization_level_description
+		is_root_level
+		
+	program
+		program_name
+		program_description
+		
+	Note the organization entity is a special case of the organization_level entity with its is_root_level set to TRUE
+
+Actions Exposed:
+	list_user_visible_programs
+	list_user_visible_organization_levels
+	list_user_visible_organizations
+	available only to administrators:
+		enter_edit_organization_levels
+		enter_edit_programs
+		change_program_user_visibility
+		change_organization_level_user_visibility
+			
+	Each action is implemented as a pgplsql function which takes a json object as a parameter, usually named _in_data, and returns a json object,usually named _out_json. The structure of these json objects will be different for each action. The _in_data objmect mujst con tain all necessary input for tnhe action function. The _out_json objects have two fields in common, result_indicator which indicate if tne function succeeded or failed, and message which contains information about the nature of a failure or about the specifics of a success. The definitin of these json objects for each actipn functipon are in the Action Patterns section below.
+		
+Action Patterns
+	
+	enter_edit_organization_levels
+	input pattern
+		_in_data:
+		{								
+			organization_level_id:
+			organization_level_name:
+			organization_level_display_name:
+			organization_level_description:
+			parent_level_name:  
+			is_root_level:	-- boolean
+			changing_user_login:
+		}		
+		
+	output pattern
+		_out_json:
+		{
+			result_indicator:
+			message:
+			organization_level_id:
+			organization_level_name:
+			organization_level_display_name:
+			organization_level_description:
+			parent_level_name:
+			is_root_level:
+			changing_user_login:
+		}
+
+				
 		change_program_user_visibility patterns
 		
 			input pattern
@@ -143,3 +172,9 @@ programs_manager Definition
 			}								
 			
 			
+Depencencies:
+	system_user
+		
+Schema Name:
+	programs_manager_schema
+
