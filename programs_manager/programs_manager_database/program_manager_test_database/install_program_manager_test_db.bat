@@ -58,9 +58,17 @@ REM install the programs_manager_schema
 REM Install the programs_manager_schema objects
 
 REM Install the tables
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\table_definitions\organizations.sql  1>> install_program_manager_test_db.log 2>>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\table_definitions\organizations_history.sql  1>> install_program_manager_test_db.log 2>>&1 
+
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\table_definitions\organization_level.sql  1>> install_program_manager_test_db.log 2>>&1 
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\table_definitions\organization_level_history.sql  1>> install_program_manager_test_db.log 2>>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\table_definitions\programs.sql  1>> install_program_manager_test_db.log 2>>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\table_definitions\programs_history.sql  1>> install_program_manager_test_db.log 2>>&1 
 
 REM Install tnhe master user
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\utility_functions\run_install_master_user.sql 1>> install_program_manager_test_db.log 2>>&1
