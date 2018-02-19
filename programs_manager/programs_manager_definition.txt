@@ -32,10 +32,12 @@ Actions Exposed:
 	list_user_visible_organization_levels
 	list_user_visible_organizations
 	available only to administrators:
+		enter_edit_organizations
 		enter_edit_organization_levels
 		enter_edit_programs
-		change_program_user_visibility
+		change_organization_visibility
 		change_organization_level_user_visibility
+		change_program_user_visibility
 			
 	Each action is implemented as a pgplsql function which takes a json object as a parameter, usually named _in_data, and returns a json object,usually named _out_json. The structure of these json objects will be different for each action. The _in_data objmect mujst con tain all necessary input for tnhe action function. The _out_json objects have two fields in common, result_indicator which indicate if tne function succeeded or failed, and message which contains information about the nature of a failure or about the specifics of a success. The definitin of these json objects for each actipn functipon are in the Action Patterns section below.
 		
