@@ -24,7 +24,8 @@ BEGIN
 		END IF;
 		
 	END IF;
-	
+	RAISE NOTICE '_change_type = %', _change_type;
+    
 	INSERT INTO programs_manager_schema.organizations_history (
 		organization_id,
 		organization_name,
@@ -55,7 +56,7 @@ $$ LANGUAGE plpgsql;
 	
     CREATE TRIGGER trig_log_organizations_history_up_or_del 
       AFTER UPDATE OR DELETE 
-      ON programs_manager_schema.organizations_history 
+      ON programs_manager_schema.organizations 
       FOR EACH ROW  
       EXECUTE PROCEDURE programs_manager_schema.trig_log_organizations_history();  
 	  
