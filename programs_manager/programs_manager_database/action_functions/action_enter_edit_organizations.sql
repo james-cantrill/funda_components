@@ -6,6 +6,7 @@
 		organization_name:
 		organization_description:
 		changing_user_login:
+		enter_or_update:	-- allowed values 'Enter' and 'Update'
 	}
 			
 * The json object returned by the function, _out_json, is defined  below.
@@ -14,12 +15,13 @@
 	{
 		result_indicator:
 		message:
+		organization_id:
 		organization_name:
 		organization_description:
 		changing_user_login:
+		enter_or_update:
 	}
 				
-
 */
 
 CREATE OR REPLACE FUNCTION programs_manager_schema.action_enter_edit_organizations (_in_data json) RETURNS json
@@ -44,21 +46,23 @@ DECLARE
 	_output_authorized_json	json;	-- output json  
 	_authorized_result	boolean;
 	
-	_insert_update_or_error	text;
+	_insert_or_update	text;
 	
 BEGIN
 
 	IF	(SELECT _in_data ->> 'organization_name')::text IS NULL 
 		OR (SELECT _in_data ->> 'organization_description')::text IS NULL 
 		OR (SELECT _in_data ->> 'changing_user_login')::text IS NULL 
+		OR (SELECT _in_data ->> 'enter_or_update')::text IS NULL 
 	THEN -- data is incomplete		
-		_message := (SELECT 'The data is incomplete as submitted so the Organization Level CAN NOT be entered, please resubmit with complete data.') ;
+		_message := (SELECT 'The data is incomplete as submitted so the Organization  CAN NOT be entered or updated, please resubmit with complete data.') ;
 		_out_json :=  (SELECT json_build_object(
 				'result_indicator', 'Failure',
 				'message', _message,
 				'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 				'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
-				'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text
+				'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+				'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
 				)
 				);
 	ELSE
@@ -77,71 +81,116 @@ BEGIN
 		
 		IF _authorized_result  THEN
 
-			--does an organization with that name exist, if it doesn't insert the data
-			-- if it does update the record
+			_insert_or_update := (SELECT _in_data ->> 'enter_or_update')::text;
+			
+			--does an organization with that name exist
 			_organization_id := (	SELECT
 								organization_id
 							FROM	programs_manager_schema.organizations
 							WHERE	organization_name = (SELECT _in_data ->> 'organization_name')::text
 							);
 							
-			IF _organization_id IS NOT NULL THEN	-- a record exists,update it
-				_insert_update_or_error := 'update';
-			ELSE	-- no record exists, insert one using the in_data
-				_insert_update_or_error := 'insert';
-			END IF;
+			IF _insert_or_update = 'Enter' THEN
 			
-			IF _insert_update_or_error = 'update' THEN
+				IF _organization_id IS NOT NULL  THEN	-- an organization with that name exists, log an error
+					_message := (SELECT 'An organization with the name ' || (SELECT _in_data ->> 'organization_name')::text || ' exists so this organization CAN NOT be entered, please resubmit with a different name.') ;
+					_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Failure',
+							'message', _message,
+							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
+							'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
+							'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+							'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+							)
+							);				
+					
+				ELSE	-- no record exists, insert one using the in_data
+				
+					INSERT INTO programs_manager_schema.organizations (
+						organization_name,
+						organization_description,
+						datetime_organization_changed ,
+						changing_user_login
+						)
+					VALUES (
+						(SELECT _in_data ->> 'organization_name')::text,
+						(SELECT _in_data ->> 'organization_description')::text,
+						LOCALTIMESTAMP (0),
+						(SELECT _in_data ->> 'changing_user_login')::text
+					);				
 
-				UPDATE	programs_manager_schema.organizations
-				   SET	organization_name = (SELECT _in_data ->> 'organization_name')::text,
-						organization_description = (SELECT _in_data ->> 'organization_description')::text,
-						datetime_organization_changed  = LOCALTIMESTAMP (0),
-						changing_user_login = (SELECT _in_data ->> 'changing_user_login')::text
-				WHERE	organization_id = _organization_id
-				;
-				
-				_message := 'The level named ' || (SELECT _in_data ->> 'organization_name')::text || ' has been updated.';
-				
-				_out_json :=  (SELECT json_build_object(
-									'result_indicator', 'Succees',
-									'message', _message,
-									'organization_name', (SELECT _in_data ->> 'organization_name')::text,
-									'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
-									'changing_user_login', _calling_login
-									));				
+					_organization_id := (	SELECT
+									organization_id
+								FROM	programs_manager_schema.organizations
+								WHERE	organization_name = (SELECT _in_data ->> 'organization_name')::text
+								);
 									
-			ELSIF _insert_update_or_error = 'insert' THEN
+					_message := 'The organization named ' || ((SELECT _in_data ->> 'organization_name')::text) || ' has been added.';
+					
+					_out_json :=  (SELECT json_build_object(
+										'result_indicator', 'Success',
+										'message', _message,
+										'organization_id', _organization_id,
+										'organization_name', (SELECT _in_data ->> 'organization_name')::text,
+										'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
+										'changing_user_login', _calling_login
+										));									
+				END IF;
 			
-				INSERT INTO programs_manager_schema.organizations (
-					organization_name,
-					organization_description,
-					datetime_organization_changed ,
-					changing_user_login
-					)
-				VALUES (
-					(SELECT _in_data ->> 'organization_name')::text,
-					(SELECT _in_data ->> 'organization_description')::text,
-					LOCALTIMESTAMP (0),
-					(SELECT _in_data ->> 'changing_user_login')::text
-				);				
-
-				_organization_id := (	SELECT
-								organization_id
-							FROM	programs_manager_schema.organizations
-							WHERE	organization_name = (SELECT _in_data ->> 'organization_name')::text
-							);
-								
-				_message := 'The organization named ' || ((SELECT _in_data ->> 'organization_name')::text) || ' has been added.';
+			ELSIF _insert_or_update = 'Update' THEN
+			
+				IF _organization_id IS NULL  THEN	-- the organization with that name doesn't exist and can't be updated, log an error
+					_message := (SELECT 'No organization with the name ' || (SELECT _in_data ->> 'organization_name')::text || ' exists so this update CAN NOT be completed, please resubmit with different data.') ;
+					_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Failure',
+							'message', _message,
+							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
+							'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
+							'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+							'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+							)
+							);				
+					
+				ELSE	-- a record exists, update it
 				
-				_out_json :=  (SELECT json_build_object(
-									'result_indicator', 'Success',
-									'message', _message,
-									'organization_name', (SELECT _in_data ->> 'organization_name')::text,
-									'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
-									'changing_user_login', _calling_login
-									));				
-			END IF;	-- IF _insert_update_or_error = 'update' 
+					UPDATE	programs_manager_schema.organizations
+					   SET	organization_name = (SELECT _in_data ->> 'organization_name')::text,
+							organization_description = (SELECT _in_data ->> 'organization_description')::text,
+							datetime_organization_changed  = LOCALTIMESTAMP (0),
+							changing_user_login = (SELECT _in_data ->> 'changing_user_login')::text
+					WHERE	organization_id = _organization_id
+					;
+					
+					_message := 'The level named ' || (SELECT _in_data ->> 'organization_name')::text || ' has been updated.';
+					
+					_out_json :=  (SELECT json_build_object(
+										'result_indicator', 'Succees',
+										'message', _message,
+										'organization_id', _organization_id,
+										'organization_name', (SELECT _in_data ->> 'organization_name')::text,
+										'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
+										'changing_user_login', _calling_login,
+										'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+										)
+									);				
+				END IF;
+				
+			ELSE -- _insert_or_update has an invalid value log an error
+			
+					_message := 'The input parameter enter_or_update has an invalid value, ' || (SELECT _in_data ->> 'enter_or_update')::text || ', nothing can be done.';
+					
+					_out_json :=  (SELECT json_build_object(
+										'result_indicator', 'Failure',
+										'message', _message,
+										'organization_name', (SELECT _in_data ->> 'organization_name')::text,
+										'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
+										'changing_user_login', _calling_login,
+										'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+										)
+									);			
+										
+			END IF; -- IF _insert_or_update
+			
 			
 		ELSE	-- user isn't authorized to enter or edit folders
 		
@@ -150,11 +199,10 @@ BEGIN
 			_out_json :=  (SELECT json_build_object(
 								'result_indicator', 'Failure',
 								'message', _message,
-								'organization_level_name', (SELECT _in_data ->> 'organization_level_name')::text,
-								'organization_level_display_name', (SELECT _in_data ->> 'organization_level_display_name')::text,
-								'organization_level_description',  (SELECT _in_data ->> 'organization_level_description')::text,
-								'parent_level_name', (SELECT _in_data ->> 'parent_level_name')::text,
-								'changing_user_login', _calling_login
+								'organization_name', (SELECT _in_data ->> 'organization_name')::text,
+								'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
+								'changing_user_login', _calling_login,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
 								));	
 		END IF;	--IF _authorized_result 
 		
