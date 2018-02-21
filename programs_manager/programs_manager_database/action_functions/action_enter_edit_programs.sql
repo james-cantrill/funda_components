@@ -1,26 +1,32 @@
 -- The function action_enter_edit_programs inserts or updates a record in the programs_manager_schema.programs table
---
---	_in_data:	{								
---					program_id:
---					program_name:
---					organization_id:
---					coc_code:
---					containing_level_name:
---					changed_by_user_login:
---				}
+/*
+--	_in_data:	
+	{								
+		program_id:
+		program_name:
+		organization_name:
+		coc_code:
+		containing_level_name:
+		changed_by_user_login:
+		enter_or_update:
+	}
 			
 -- The json object returned by the function, _out_json, is defined  below.
 
---	_out_json:	{
---					result_indicator:
---					message:
---					program_id:
---					program_name:
---					organization_id:
---					coc_code:
---					containing_level_name:
---					changed_by_user_login:
---				}
+	_out_json:	
+	{
+		result_indicator:
+		message:
+		program_id:
+		program_name:
+		organization_name:
+		coc_code:
+		containing_level_name:
+		changed_by_user_login:
+		enter_or_update:
+	}
+
+*/
 
 
 CREATE OR REPLACE FUNCTION programs_manager_schema.action_enter_edit_programs (_in_data json) RETURNS json
@@ -43,7 +49,8 @@ DECLARE
 	_old_containing_level_name	text;
 	_containing_level_name_updateable	boolean;
 	
-	
+	_organization_id	uuid;
+	_organization_name	text;
 	
 --	for calling the system_user_schema.util_is_user_authorized function to determine if the calling user is authorized to add new users
 	_calling_login	text;
@@ -53,7 +60,7 @@ DECLARE
 
 BEGIN
 
-	-- Determine if the calling user is authorized
+	-- Determine if the calling user is authorized ---------------------------
 	_calling_login := (SELECT _in_data ->> 'changed_by_user_login')::text;
 	
 	_input_authorized_json :=	(SELECT json_build_object(
@@ -65,11 +72,40 @@ BEGIN
 	_output_authorized_json := (SELECT * FROM system_user_schema.util_is_user_authorized (_input_authorized_json));
 	
 	_authorized_result := (SELECT _output_authorized_json ->> 'authorized')::boolean;
+
+-------- Does organization exist? --------------------------------------------
+	_organization_name := (	SELECT
+						organization_id
+					FROM	programs_manager_schema.organizations
+					WHERE	organization_id = (SELECT _in_data ->> 'organization_id')::uuid
+					);
 	
-	IF _authorized_result  THEN
+-------- Does containing organization level exist? --------------------------------------------
 	
-		-- check if the submitted data is complete
-		IF (SELECT _in_data ->> 'program_id')::text IS NULL OR (SELECT _in_data ->> 'program_name')::text IS NULL OR (SELECT _in_data ->> 'organization_id')::text IS NULL OR (SELECT _in_data ->> 'coc_code')::text IS NULL OR (SELECT _in_data ->> 'containing_level_name')::text IS NULL OR (SELECT _in_data ->> 'changed_by_user_login')::text IS NULL THEN -- data is incomplete
+------------------------------------------------------------------------------
+
+
+	IF NOT _authorized_result  THEN	-- user isn't authorized to enter or edit reports
+	
+		_message := 'The user ' || _calling_login || ' IS NOT Authorized to enter or edit programs. Nothng was changed.';
+		
+		_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Failure',
+							'message', _message,
+							'program_id', (SELECT _in_data ->> 'program_id')::text,
+							'program_name', (SELECT _in_data ->> 'program_name')::text,
+							'organization_id', (SELECT _in_data ->> 'organization_id')::text,
+							'coc_code', (SELECT _in_data ->> 'coc_code')::text,
+							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
+							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
+							));	
+	
+	ELSIF (SELECT _in_data ->> 'program_id')::text IS NULL OR (SELECT _in_data ->> 'program_name')::text IS NULL 
+			OR (SELECT _in_data ->> 'organization_id')::text IS NULL 
+			OR (SELECT _in_data ->> 'coc_code')::text IS NULL 
+			OR (SELECT _in_data ->> 'containing_level_name')::text IS NULL 
+			OR (SELECT _in_data ->> 'changed_by_user_login')::text IS NULL 
+		THEN -- data is incomplete
 		
 			_message := (SELECT 'The data is incomplete as submitted so the report CAN NOT be entered or edited, please resubmit with complete data.') ;
 			_out_json :=  (SELECT json_build_object(
@@ -81,7 +117,17 @@ BEGIN
 								'coc_code', (SELECT _in_data ->> 'coc_code')::text,
 								'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 								'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
-								));		
+								));	
+	
+	ELSIF 	-- Does organization exist?
+	
+	ELSIF -- Does containing organization level exist?
+	
+	ELSE
+	
+	END IF;
+	
+
 								
 		ELSE	--data is complete so we proceed
 		
@@ -283,21 +329,7 @@ BEGIN
 		
 		END IF;	-- check if the submitted data is complete
 		
-	ELSE	-- user isn't authorized to enter or edit reports
-	
-		_message := 'The user ' || _calling_login || ' IS NOT Authorized to enter or edit programs. Nothng was changed.';
-		
-		_out_json :=  (SELECT json_build_object(
-							'result_indicator', 'Failure',
-							'message', _message,
-							'program_id', (SELECT _in_data ->> 'program_id')::text,
-							'program_name', (SELECT _in_data ->> 'program_name')::text,
-							'organization_id', (SELECT _in_data ->> 'organization_id')::text,
-							'coc_code', (SELECT _in_data ->> 'coc_code')::text,
-							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
-							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text
-							));	
-
+	ELSE
 	END IF;
 
 	RETURN _out_json;
