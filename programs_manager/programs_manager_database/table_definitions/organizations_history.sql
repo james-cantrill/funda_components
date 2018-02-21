@@ -10,8 +10,7 @@ CREATE TABLE programs_manager_schema.organizations_history (
 	changing_user_login	text NOT NULL,
 	datetime_organization_change_started	timestamp without time zone NOT NULL,
 	datetime_organization_change_ended	timestamp without time zone NOT NULL,   
-	change_type	text NOT NULL, -- the change_type will be either update or delete
-    UNIQUE (organization_id, datetime_organization_changed, changing_user_login, change_type)
+	change_type	text NOT NULL -- the change_type will be either update or delete
 );
 
 
