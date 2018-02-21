@@ -3,6 +3,7 @@
 
 	_in_data:	
 	{
+		organization_id:
 		organization_name:
 		organization_description:
 		changing_user_login:
@@ -53,12 +54,16 @@ BEGIN
 	IF	(SELECT _in_data ->> 'organization_name')::text IS NULL 
 		OR (SELECT _in_data ->> 'organization_description')::text IS NULL 
 		OR (SELECT _in_data ->> 'changing_user_login')::text IS NULL 
-		OR (SELECT _in_data ->> 'enter_or_update')::text IS NULL 
+		OR (SELECT _in_data ->> 'enter_or_update')::text IS NULL  
+		OR ((SELECT _in_data ->> 'enter_or_update')::text = 'Update'
+			AND (SELECT _in_data ->> 'organization_id')::text IS NULL
+			)
 	THEN -- data is incomplete		
 		_message := (SELECT 'The data is incomplete as submitted so the Organization  CAN NOT be entered or updated, please resubmit with complete data.') ;
 		_out_json :=  (SELECT json_build_object(
 				'result_indicator', 'Failure',
 				'message', _message,
+				'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 				'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 				'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
 				'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
@@ -83,20 +88,22 @@ BEGIN
 
 			_insert_or_update := (SELECT _in_data ->> 'enter_or_update')::text;
 			
-			--does an organization with that name exist
-			_organization_id := (	SELECT
-								organization_id
-							FROM	programs_manager_schema.organizations
-							WHERE	organization_name = (SELECT _in_data ->> 'organization_name')::text
-							);
 							
 			IF _insert_or_update = 'Enter' THEN
+			
+				--does an organization with that name exist
+				_organization_id := (	SELECT
+									organization_id
+								FROM	programs_manager_schema.organizations
+								WHERE	organization_name = (SELECT _in_data ->> 'organization_name')::text
+								);
 			
 				IF _organization_id IS NOT NULL  THEN	-- an organization with that name exists, log an error
 					_message := (SELECT 'An organization with the name ' || (SELECT _in_data ->> 'organization_name')::text || ' exists so this organization CAN NOT be entered, please resubmit with a different name.') ;
 					_out_json :=  (SELECT json_build_object(
 							'result_indicator', 'Failure',
 							'message', _message,
+							'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
 							'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
@@ -139,11 +146,18 @@ BEGIN
 			
 			ELSIF _insert_or_update = 'Update' THEN
 			
-				IF _organization_id IS NULL  THEN	-- the organization with that name doesn't exist and can't be updated, log an error
-					_message := (SELECT 'No organization with the name ' || (SELECT _in_data ->> 'organization_name')::text || ' exists so this update CAN NOT be completed, please resubmit with different data.') ;
+				_organization_name := (	SELECT
+									organization_name
+								FROM	programs_manager_schema.organizations
+								WHERE	organization_id = (SELECT _in_data ->> 'organization_id')::uuid
+								);
+				
+				IF _organization_name IS NULL  THEN	-- the organization with that name doesn't exist and can't be updated, log an error
+					_message := (SELECT 'No organization with the organization_id ' || (SELECT _in_data ->> 'organization_id')::text || ' exists so this update CAN NOT be completed, please resubmit with different data.') ;
 					_out_json :=  (SELECT json_build_object(
 							'result_indicator', 'Failure',
 							'message', _message,
+							'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
 							'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
@@ -158,15 +172,15 @@ BEGIN
 							organization_description = (SELECT _in_data ->> 'organization_description')::text,
 							datetime_organization_changed  = LOCALTIMESTAMP (0),
 							changing_user_login = (SELECT _in_data ->> 'changing_user_login')::text
-					WHERE	organization_id = _organization_id
+					WHERE	organization_id = (SELECT _in_data ->> 'organization_id')::uuid
 					;
 					
-					_message := 'The level named ' || (SELECT _in_data ->> 'organization_name')::text || ' has been updated.';
+					_message := 'The organization with the organization_id ' || (SELECT _in_data ->> 'organization_id')::text || ' has been updated.';
 					
 					_out_json :=  (SELECT json_build_object(
 										'result_indicator', 'Succees',
 										'message', _message,
-										'organization_id', _organization_id,
+										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 										'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
 										'changing_user_login', _calling_login,
@@ -182,6 +196,7 @@ BEGIN
 					_out_json :=  (SELECT json_build_object(
 										'result_indicator', 'Failure',
 										'message', _message,
+										'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 										'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 										'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
 										'changing_user_login', _calling_login,
@@ -199,6 +214,7 @@ BEGIN
 			_out_json :=  (SELECT json_build_object(
 								'result_indicator', 'Failure',
 								'message', _message,
+								'organization_id', (SELECT _in_data ->> 'organization_id')::text,
 								'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 								'organization_description',  (SELECT _in_data ->> 'organization_description')::text,
 								'changing_user_login', _calling_login,
