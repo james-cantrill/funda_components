@@ -1,121 +1,114 @@
 --	test_action_enter_edit_programs
 
---	_in_data:	{								
---					program_id:
---					program_name:
---					organization_id:
---					coc_code:
---					containing_level_name:
---					changed_by_user_login:
---				}
+/*
+--	_in_data:	
+	{								
+		program_id:
+		program_name:
+		program_description:
+		organization_name:
+		containing_level_name:
+		changed_by_user_login:
+		enter_or_update:
+	}
 			
 -- The json object returned by the function, _out_json, is defined  below.
 
---	_out_json:	{
---					result_indicator:
---					message:
---					program_id:
---					program_name:
---					organization_id:
---					coc_code:
---					containing_level_name:
---					changed_by_user_login:
---				}
+	_out_json:	
+	{
+		result_indicator:
+		message:
+		program_id:
+		program_name:
+		program_description:
+		organization_name:
+		containing_level_name:
+		changed_by_user_login:
+		enter_or_update:
+	}
 
---	Delete all existing programs
-DELETE FROM programs_manager_schema.programs;
+*/
+
 
 --	log in the master user
-SELECT * FROM system_user_schema.action_user_login ('{"login": "muser", "password":"ha_melech!16"}');
+SELECT * FROM system_user_schema.action_user_login ('{"login": "muser", "password":"master"}');
 
--- Test 1 successful insert
+--	insert an organization and an organization level
 DO $$
 DECLARE  _output_json	json;
 BEGIN	
-	RAISE NOTICE 'TEST 1 insert expected result: Success';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "40009000", "program_name": "CCST Adolescent Transitional - Lasting Success Foster Care", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_other", "changed_by_user_login": "muser"}'));
+	RAISE NOTICE 'insert an organization expected result: Success';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Test Organization 1", "organization_description": "This is Test Organization 1",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
 	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
 	RAISE NOTICE '';
 END$$;
 
--- Test 2 failure user isn't authorized
 DO $$
 DECLARE  _output_json	json;
 BEGIN	
-	RAISE NOTICE 'TEST 2 user isn''t authorized expected result: Failure';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "CCST Bridger Outreach Services", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_other", "changed_by_user_login": "opal"}'));
+	RAISE NOTICE 'Insert an organizatipn level expected result: Success';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organization_level ('{"organization_level_name": "program_root", "organization_level_display_name":"All Programs", "organization_level_description":"List of all programs", "is_root_level": "TRUE", "organization_name": "Test Organization 1", "changing_user_login": "muser", "enter_or_update": "Enter"}'));
 	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
 	RAISE NOTICE '';
 END$$;
 
--- Test 3 failure containing_level_name doesn't exist
-DO $$
+(SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_name": "A Good Program", "program_description": "This is a descriptipon","organization_name":"Test Organization 1", "containing_level_name": "program_root", "changed_by_user_login": "muser", "enter_or_update": "Enter"}'));
+-- Test 1 incomplete data program_name
+
+-- Test 2 incomplete data program_description
+
+-- Test 3 incomplete data organization_name
+
+-- Test 4 incomplete data containing_level_name
+
+-- Test 5 incomplete data changed_by_user_login
+
+-- Test 6 incomplete data enter_or_update
+
+-- Test 7 incomplete data enter_or_update Update AND program_id IS NULL
+
+-- Test 8 Organization does not exist
+
+-- Test 9 Containing organization level does not exist
+
+-- Test 10 on enter program name is not unique	
+
+-- Test 11 good insert
+
+-- Test 12 the program does not exist
+
+-- Test 13 enter_or_update has an invalid value
+
+-- Test 14 good insert
+/*DO $$
 DECLARE  _output_json	json;
+		_org_lvl_id	uuid;
 BEGIN	
-	RAISE NOTICE 'TEST 3 containing_level_name doesn''t exist expected result: Failure';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "CCST Bridger Outreach Services", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_dev", "changed_by_user_login": "muser"}'));
+	RAISE NOTICE 'Test 14 good insert expected result: Success';
+	
+		_org_lvl_id := (SELECT 
+					organization_level_id
+				FROM	programs_manager_schema.organization_level
+				WHERE	organization_level_name = 'program_root' );
+	RAISE NOTICE '_org_lvl_id = %', _org_lvl_id;
+
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_name": "A Good Program", "program_description": "This is a descriptipon","organization_name":"Test Organization 1", "containing_level_name": "program_root", "changed_by_user_login": "muser", "enter_or_update": "Enter"}'));
 	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
 	RAISE NOTICE '';
 END$$;
+*/
+-- Test 15 good update
 
--- Test 4 failure program_name already exists
-DO $$
-DECLARE  _output_json	json;
-BEGIN	
-	RAISE NOTICE 'TEST 4 program_name already exists expected result: Failure';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "CCST Adolescent Transitional - Lasting Success Foster Care", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_other", "changed_by_user_login": "muser"}'));
-	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
-	RAISE NOTICE '';
-END$$;
 
--- Test 5 failure incomplete input
-DO $$
-DECLARE  _output_json	json;
-BEGIN	
-	RAISE NOTICE 'TEST 5  incomplete input expected result: Failure';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "CCST Adolescent Transitional - Lasting Success Foster Care", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "changed_by_user_login": "muser"}'));
-	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
-	RAISE NOTICE '';
-END$$;
+SELECT '';
+SELECT * FROM programs_manager_schema.organizations;
 
--- Test 6 successful update
-DO $$
-DECLARE  _output_json	json;
-BEGIN	
-	RAISE NOTICE 'TEST 6 successful update expected result: Success';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "CCST Bridger Outreach Services", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_other", "changed_by_user_login": "muser"}'));
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "UPdated CCST Bridger Outreach Services", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_other", "changed_by_user_login": "muser"}'));
-	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
-	RAISE NOTICE '';
-END$$;
+SELECT '';
+SELECT * FROM programs_manager_schema.organization_level;
 
--- Test 7  update to an existing program name
-DO $$
-DECLARE  _output_json	json;
-BEGIN	
-	RAISE NOTICE 'TEST 7  update to an existing program name expected result: Failure';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "UPdated CCST Bridger Outreach Services", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_error", "changed_by_user_login": "muser"}'));
-	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
-	RAISE NOTICE '';
-END$$;
-
--- Test 8  update to an existing program name
-DO $$
-DECLARE  _output_json	json;
-BEGIN	
-	RAISE NOTICE 'TEST 8  update to an existing program name expected result: Failure';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_id": "10013000", "program_name": "CCST Adolescent Transitional - Lasting Success Foster Care", "organization_id":"0A791B9C", "coc_code":"NY-501 - Elmira/Steuben Allegany Livingston Chemung Schuyler Counties CoC", "containing_level_name": "cccs_other", "changed_by_user_login": "muser"}'));
-	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
-	RAISE NOTICE '_output_json = %', _output_json;
-	RAISE NOTICE '';
-END$$;
-
+SELECT '';
 SELECT * FROM programs_manager_schema.programs;
 
