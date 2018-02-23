@@ -38,17 +38,11 @@ DECLARE
 	_out_json json;
 	_message	text;
 	
-	_program_name	text;
-	_program_name_unique	boolean;
-	_program_id	integer;
-	_old_program_name	text;
-	_program_name_updateable	boolean;
+	_program_name	text;	
+	_program_id	uuid;
+	_program_description	text;
 	
 	_containing_level_id	uuid;
-	_containing_level_exists	boolean;
-	_old_containing_level_name	text;
-	_containing_level_name_updateable	boolean;
-	
 	_organization_id	uuid;
 	_organization_name	text;
 	
@@ -86,9 +80,8 @@ BEGIN
 	_containing_level_id := (	SELECT
 						organization_level_id
 					FROM	programs_manager_schema.organization_level
-					WHERE	organization_level_name = (SELECT _in_data ->> 'organization_level_name')::text
+					WHERE	organization_level_name = (SELECT _in_data ->> 'containing_level_name')::text
 					);
-	RAISE NOTICE '_containing_level_id = %', _containing_level_id;
 	
 ------------------------------------------------------------------------------
 
@@ -198,7 +191,7 @@ BEGIN
 					organization_id,
 					containing_organization_level_id,
 					datetime_program_changed,
-					changed_by_user_login
+					changing_user_login
 					)
 				VALUES	(
 					(SELECT _in_data ->> 'program_name')::text, 
@@ -261,16 +254,16 @@ BEGIN
 			ELSE
 			
 				UPDATE  programs_manager_schema.programs 
-					SET	program_id = (SELECT _in_data ->> 'program_id')::integer,
+					SET	program_id = (SELECT _in_data ->> 'program_id')::uuid,
 						program_name = (SELECT _in_data ->> 'program_name')::text, 
 						program_description = (SELECT _in_data ->> 'program_description')::text,
 						organization_id = _organization_id,
 						containing_organization_level_id = _containing_level_id,
 						datetime_program_changed = LOCALTIMESTAMP (0),
-						changed_by_user_login = (SELECT _in_data ->> 'changed_by_user_login')::text
-					WHERE	program_id = _program_id	
+						changing_user_login = (SELECT _in_data ->> 'changed_by_user_login')::text
+					WHERE	program_id = (SELECT _in_data ->> 'program_id')::uuid	
 					;								
-		
+				
 					_message := (SELECT 'The program ' || (SELECT _in_data ->> 'program_name')::text || ' has been updated.');
 					_out_json :=  (SELECT json_build_object(
 									'result_indicator', 'Success',
