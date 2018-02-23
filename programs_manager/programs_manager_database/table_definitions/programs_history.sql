@@ -11,8 +11,7 @@ CREATE TABLE programs_manager_schema.programs_history (
 	changing_user_login	text NOT NULL,
 	datetime_user_change_started	timestamp without time zone NOT NULL,
 	datetime_user_change_ended	timestamp without time zone NOT NULL, 
-	change_type	text NOT NULL, -- the change_type will be either update or delete
-    UNIQUE (program_id, datetime_program_changed, changing_user_login )
+	change_type	text NOT NULL -- the change_type will be either update or delete
 );
 
 
