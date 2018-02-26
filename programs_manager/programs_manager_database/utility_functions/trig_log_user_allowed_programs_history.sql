@@ -10,7 +10,6 @@ DECLARE
 		
 	_integer_var integer;
 	
-	_password_changed text;
 	_change_type	text;
 	
 BEGIN
@@ -30,7 +29,7 @@ BEGIN
 		sysuser_id,
 		login,
 		program_id,
-		program,
+		program_name,
 		program_accessible,
 		datetime_program_accessible_started,
 		datetime_program_accessible_ended,
@@ -41,7 +40,7 @@ BEGIN
 		OLD.sysuser_id,
 		OLD.login,
 		OLD.program_id,
-		OLD.program, 
+		OLD.program_name, 
 		OLD.program_accessible,
 		OLD.datetime_program_accessible_changed,
 		LOCALTIMESTAMP (0),
@@ -55,6 +54,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;		
 
+	DROP TRIGGER IF EXISTS trig_log_user_allowed_programs_history_up_or_del ON programs_manager_schema.system_user_allowed_programs;
 	
     CREATE TRIGGER trig_log_user_allowed_programs_history_up_or_del 
       AFTER UPDATE OR DELETE 

@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS programs_manager_schema.system_user_allowed_programs;
 CREATE TABLE programs_manager_schema.system_user_allowed_programs (
 	sysuser_id	uuid NOT NULL,
 	login	text NOT NULL,
-	program_id	integer NOT NULL,
+	program_id	uuid NOT NULL,
 	program_name	text NOT NULL,
 	program_accessible	boolean NOT NULL,
 	datetime_program_accessible_changed	timestamp without time zone NOT NULL,
