@@ -5,6 +5,7 @@
 		program_id:
 		program_name:
 		program_description:
+		other_program_id:   -- unique program identifier from outside this system. It can't be NULL but it can be an empty string
 		organization_name:
 		containing_level_name:
 		changed_by_user_login:
@@ -20,6 +21,7 @@
 		program_id:
 		program_name:
 		program_description:
+		other_program_id:
 		organization_name:
 		coc_code:
 		containing_level_name:
@@ -95,6 +97,7 @@ BEGIN
 							'program_id', (SELECT _in_data ->> 'program_id')::text,
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'program_description', (SELECT _in_data ->> 'program_description')::text,
+							'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -103,6 +106,7 @@ BEGIN
 	
 	ELSIF (SELECT (SELECT _in_data ->> 'program_name')::text IS NULL 
 			OR (SELECT _in_data ->> 'program_description')::text IS NULL 
+			OR (SELECT _in_data ->> 'other_program_id')::text IS NULL
 			OR (SELECT _in_data ->> 'organization_name')::text IS NULL 
 			OR (SELECT _in_data ->> 'containing_level_name')::text IS NULL 
 			OR (SELECT _in_data ->> 'changed_by_user_login')::text IS NULL  
@@ -119,6 +123,7 @@ BEGIN
 							'program_id', (SELECT _in_data ->> 'program_id')::text,
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'program_description', (SELECT _in_data ->> 'program_description')::text,
+							'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -134,6 +139,7 @@ BEGIN
 							'program_id', (SELECT _in_data ->> 'program_id')::text,
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'program_description', (SELECT _in_data ->> 'program_description')::text,
+							'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -149,6 +155,7 @@ BEGIN
 							'program_id', (SELECT _in_data ->> 'program_id')::text,
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'program_description', (SELECT _in_data ->> 'program_description')::text,
+							'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -172,11 +179,12 @@ BEGIN
 					
 				_message := (SELECT 'The submitted program name, ' || (SELECT _in_data ->> 'program_name')::text || ', already exists, please choose another.') ;
 				_out_json :=  (SELECT json_build_object (
-									'result_indicator', 'Failure',
-									'message', _message,
+							'result_indicator', 'Failure',
+							'message', _message,
 							'program_id', (SELECT _in_data ->> 'program_id')::text,
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'program_description', (SELECT _in_data ->> 'program_description')::text,
+							'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -188,6 +196,7 @@ BEGIN
 				INSERT INTO programs_manager_schema.programs (
 					program_name,
 					program_description,
+					other_program_id,
 					organization_id,
 					containing_organization_level_id,
 					datetime_program_changed,
@@ -196,6 +205,7 @@ BEGIN
 				VALUES	(
 					(SELECT _in_data ->> 'program_name')::text, 
 					(SELECT _in_data ->> 'program_description')::text, 
+					(SELECT _in_data ->> 'other_program_id')::text, 
 					_organization_id,
 					_containing_level_id,
 					LOCALTIMESTAMP (0),
@@ -217,6 +227,7 @@ BEGIN
 								'program_id', _program_id,
 								'program_name', (SELECT _in_data ->> 'program_name')::text,
 								'program_description', (SELECT _in_data ->> 'program_description')::text,
+								'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 								'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 								'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 								'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -244,6 +255,7 @@ BEGIN
 								'program_id', (SELECT _in_data ->> 'program_id')::text,
 								'program_name', (SELECT _in_data ->> 'program_name')::text,
 								'program_description', (SELECT _in_data ->> 'program_description')::text,
+								'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 								'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 								'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 								'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -257,6 +269,7 @@ BEGIN
 					SET	program_id = (SELECT _in_data ->> 'program_id')::uuid,
 						program_name = (SELECT _in_data ->> 'program_name')::text, 
 						program_description = (SELECT _in_data ->> 'program_description')::text,
+						other_program_id = (SELECT _in_data ->> 'other_program_id')::text,
 						organization_id = _organization_id,
 						containing_organization_level_id = _containing_level_id,
 						datetime_program_changed = LOCALTIMESTAMP (0),
@@ -271,6 +284,7 @@ BEGIN
 									'program_id', (SELECT _in_data ->> 'program_id')::text,
 									'program_name', (SELECT _in_data ->> 'program_name')::text,
 									'program_description', (SELECT _in_data ->> 'program_description')::text,
+									'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 									'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 									'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 									'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
@@ -288,6 +302,7 @@ BEGIN
 							'program_id', (SELECT _in_data ->> 'program_id')::text,
 							'program_name', (SELECT _in_data ->> 'program_name')::text,
 							'program_description', (SELECT _in_data ->> 'program_description')::text,
+							'other_program_id', (SELECT _in_data ->> 'other_program_id')::text,
 							'organization_name', (SELECT _in_data ->> 'organization_name')::text,
 							'containing_level_name', (SELECT _in_data ->> 'containing_level_name')::text,
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,

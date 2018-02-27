@@ -79,7 +79,7 @@ DO $$
 DECLARE  _output_json	json;
 BEGIN	
 	RAISE NOTICE 'Insert a program expected result: Success';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_name": "A Good Program", "program_description": "This is a descriptipon","organization_name":"Test Organization 1", "containing_level_name": "program_root", "changed_by_user_login": "muser", "enter_or_update": "Enter"}'));
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_name": "A Good Program", "program_description": "This is a descriptipon", "other_program_id": "70014021", "organization_name":"Test Organization 1", "containing_level_name": "program_root", "changed_by_user_login": "muser", "enter_or_update": "Enter"}'));
 	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
 	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
 	RAISE NOTICE '';
@@ -89,7 +89,7 @@ DO $$
 DECLARE  _output_json	json;
 BEGIN	
 	RAISE NOTICE 'Insert a program expected result: Success';
-	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_name": "A Very Good Program", "program_description": "This is a descriptipon","organization_name":"Test Organization 1", "containing_level_name": "program_root", "changed_by_user_login": "muser", "enter_or_update": "Enter"}'));
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_programs ('{"program_name": "A Very Good Program", "program_description": "This is a descriptipon",  "other_program_id": "20009000", "organization_name":"Test Organization 1", "containing_level_name": "program_root", "changed_by_user_login": "muser", "enter_or_update": "Enter"}'));
 	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
 	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
 	RAISE NOTICE '';
@@ -218,6 +218,15 @@ BEGIN
 	RAISE NOTICE '';
 END$$;		
 		
+SELECT '';
+SELECT * FROM programs_manager_schema.organizations;
+
+SELECT '';
+SELECT * FROM programs_manager_schema.organization_level;
+
+SELECT '';
+SELECT * FROM programs_manager_schema.programs;
+
 SELECT '';
 SELECT * FROM programs_manager_schema.system_user_allowed_programs;
 

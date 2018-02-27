@@ -5,6 +5,7 @@ CREATE TABLE programs_manager_schema.programs_history (
 	program_id	uuid NOT NULL,
 	program_name	text NOT NULL,
 	program_description 	text,
+	other_program_id	text,
 	organization_id	uuid NOT NULL,
 	containing_organization_level_id	uuid NOT NULL,
 	datetime_program_changed	timestamp without time zone NOT NULL,
