@@ -7,5 +7,5 @@ INSERT INTO system_user_schema.system_actions (service, action, action_display_n
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'enter_edit_programs', 'Enter or Edit the Programs');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'change_program_user_visibility', 'Program Visibility');
 INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'change_organization_level_user_visibility', 'Organization Level Visibility');
-INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'list_user_visible_programs', 'List Programs');
+INSERT INTO system_user_schema.system_actions (service, action, action_display_name) VALUES ('programs_manager', 'list_user_visible_programs', 'List Visible Programs');
 
