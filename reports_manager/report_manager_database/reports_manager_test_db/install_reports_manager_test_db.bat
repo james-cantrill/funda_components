@@ -1,6 +1,6 @@
 REM install_reports_manager_test_db.bat
 
-"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\program_manager_test_database\create_program_manager_test_db.sql 1> install_reports_manager_test_db.log 2>&1
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\program_manager_test_db\create_program_manager_test_db.sql 1> install_reports_manager_test_db.log 2>&1
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\program_manager_test_database\install_pgcrypto.sql  1>> install_reports_manager_test_db.log 2>>&1
 
@@ -94,8 +94,32 @@ REM Install action functions
 
 REM  **************************************************************
 
-REM install the schema
+REM install the report_manager_schema
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\reports_manager_test_db\report_manager_schema.sql  1> install_reports_manager_test_db.log 2>&1 
+
+REM install the report_manager_schema tables
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\parameter_list.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\parameter_list_history.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\report_folders.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\report_folders_history.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\reports.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\reports_history.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\report_parameters.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\report_parameters_history.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\system_user_allowed_reports.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\system_user_allowed_reports_history.sql  1> install_reports_manager_test_db.log 2>&1 
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d program_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\table_definitions\insert_system_actions_for_report_manager.sql  1> install_reports_manager_test_db.log 2>&1 
+
 
 REM  *************************************************************
 REM Install the master user
