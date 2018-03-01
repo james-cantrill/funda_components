@@ -24,7 +24,6 @@ BEGIN
 		END IF;
 		
 	END IF;
-	RAISE NOTICE '_change_type = %', _change_type;
     
 	INSERT INTO programs_manager_schema.organizations_history (
 		organization_id,
