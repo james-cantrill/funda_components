@@ -5,6 +5,7 @@ CREATE TABLE programs_manager_schema.programs (
 	program_id	uuid NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
 	program_name	text NOT NULL,
 	program_description 	text,
+	other_program_id	text,	-- unique program identifier from outside this system.
 	organization_id	uuid NOT NULL,
 	containing_organization_level_id	uuid NOT NULL,
 	datetime_program_changed	timestamp without time zone NOT NULL,

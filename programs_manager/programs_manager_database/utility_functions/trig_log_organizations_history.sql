@@ -52,6 +52,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;		
 
+	DROP TRIGGER IF EXISTS trig_log_organizations_history_up_or_del ON programs_manager_schema.organizations;
 	
     CREATE TRIGGER trig_log_organizations_history_up_or_del 
       AFTER UPDATE OR DELETE 
