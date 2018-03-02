@@ -99,21 +99,9 @@ BEGIN
 							);
 
 ------------------------------------------------------------------------------
-	IF (SELECT (SELECT _in_data ->> 'folder_name')::text IS NULL 
-			OR (SELECT _in_data ->> 'folder_display_name')::text IS NULL 
-			OR (SELECT _in_data ->> 'description')::text IS NULL
-			OR (SELECT _in_data ->> 'is_root_folder')::text IS NULL 
-			OR (  (SELECT _in_data ->> 'is_root_folder')::BOOLEAN = FALSE
-			      AND (SELECT _in_data ->> 'parent_folder_name')::text IS NULL 
-			    )
-			OR (SELECT _in_data ->> 'changed_by_user_login')::text IS NULL  
-			OR (SELECT _in_data ->> 'enter_or_update')::text IS NULL  
-			OR (	(SELECT _in_data ->> 'enter_or_update')::text = 'Update'
-					AND (SELECT _in_data ->> 'folder_id')::text IS NULL 
-				))
-		THEN -- data is incomplete
-		
-			_message := (SELECT 'The data is incomplete as submitted so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+	IF (SELECT _in_data ->> 'folder_name')::text IS NULL THEN
+	
+			_message := (SELECT 'The folder_name is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
 			
 			_out_json :=  (SELECT json_build_object(
 								'result_indicator', 'Failure',
@@ -125,7 +113,122 @@ BEGIN
 								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
 								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
 								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
-								));		
+								));			
+	ELSIF (SELECT _in_data ->> 'folder_display_name')::text IS NULL THEN
+			_message := (SELECT 'The folder_display_name is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
+	ELSIF (SELECT _in_data ->> 'description')::text IS NULL THEN
+			_message := (SELECT 'The description is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
+	ELSIF  (SELECT _in_data ->> 'is_root_folder')::text IS NULL THEN
+			_message := (SELECT 'The is_root_folder is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
+	ELSIF ( (SELECT _in_data ->> 'is_root_folder')::BOOLEAN = FALSE
+			      AND (SELECT _in_data ->> 'parent_folder_name')::text IS NULL 
+			    ) THEN
+			_message := (SELECT 'The is_root_folder is FALSE but the parent_folder_name is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
+				
+				
+	ELSIF  (SELECT _in_data ->> 'changing_user_login')::text IS NULL  THEN
+	
+			_message := (SELECT 'The changing_user_login is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
+	
+	ELSIF  (SELECT _in_data ->> 'enter_or_update')::text IS NULL  THEN
+			_message := (SELECT 'The enter_or_update is missing so the folder CAN NOT be entered or edited, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
+	
+	ELSIF  (	(SELECT _in_data ->> 'enter_or_update')::text = 'Update'
+					AND (SELECT _in_data ->> 'folder_id')::text IS NULL 
+				) THEN -- data is incomplete
+		
+			_message := (SELECT 'The folder_id is missing  so the folder CAN NOT be UPDATED, please resubmit with complete data.');
+			
+			_out_json :=  (SELECT json_build_object(
+								'result_indicator', 'Failure',
+								'message', _message,
+								'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+								'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+								'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+								'description',  (SELECT _in_data ->> 'description')::text,
+								'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+								'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+								'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+								));			
+	
 							
 	ELSIF  NOT _authorized_result  THEN
 		_message := 'The user ' || _calling_login || ' IS NOT Authorized to enter or edit report folders. Nothng was changed.';
@@ -211,7 +314,7 @@ BEGIN
 								
 				_message := 'The folder named ' || (SELECT _in_data ->> 'folder_name')::text || ' has been added.';
 				_out_json :=  (SELECT json_build_object(
-							'result_indicator', 'Failure',
+							'result_indicator', 'Success',
 							'message', _message,
 							'folder_id', (SELECT _in_data ->> 'folder_id')::text,
 							'folder_name', (SELECT _in_data ->> 'folder_name')::text,
@@ -224,12 +327,12 @@ BEGIN
 			
 			END IF;
 			
-		ELSIF (SELECT _in_data ->> 'enter_or_update')::text = 'Update' 
+		ELSIF (SELECT _in_data ->> 'enter_or_update')::text = 'Update' THEN
 		
 			_folder_name_from_id := (	SELECT
 									folder_name 
 								FROM	report_manager_schema.report_folders
-								WHERE	folder_id = (SELECT _in_data ->> 'folder_id')::text
+								WHERE	folder_id = (SELECT _in_data ->> 'folder_id')::uuid
 								);	
 
 			IF _folder_name_from_id IS NULL THEN	-- folder does not exist
@@ -260,6 +363,19 @@ BEGIN
 				WHERE	folder_id = (SELECT _in_data ->> 'folder_id')::uuid
 				;
 				
+				_message := 'The folder with the ID ' || (SELECT _in_data ->> 'folder_id')::text || ' has been updated.';
+				_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Success',
+							'message', _message,
+							'folder_id', (SELECT _in_data ->> 'folder_id')::text,
+							'folder_name', (SELECT _in_data ->> 'folder_name')::text,
+							'folder_display_name', (SELECT _in_data ->> 'folder_display_name')::text,
+							'description',  (SELECT _in_data ->> 'description')::text,
+							'parent_folder_name', (SELECT _in_data ->> 'parent_folder_name')::text,
+							'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text,
+							'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
+							));						
+			
 			END IF;
 
 		ELSE    --  enter_or_update has an invalid value
