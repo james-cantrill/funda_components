@@ -49,6 +49,8 @@ END;
 $$ LANGUAGE plpgsql;		
 
 	
+	DROP TRIGGER IF EXISTS trig_log_report_parameters_history_up_or_del ON report_manager_schema.report_parameters;
+	
     CREATE TRIGGER trig_log_report_parameters_history_up_or_del 
       AFTER UPDATE OR DELETE 
       ON report_manager_schema.report_parameters  
