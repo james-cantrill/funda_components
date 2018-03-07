@@ -51,7 +51,9 @@ END;
 $$ LANGUAGE plpgsql;		
 
 	
-    CREATE TRIGGER trig_log_system_user_allowed_reports_history_up_or_del 
+ 	DROP TRIGGER IF EXISTS trig_log_system_user_allowed_reports_history_up_or_del ON report_manager_schema.system_user_allowed_reports;
+	
+   CREATE TRIGGER trig_log_system_user_allowed_reports_history_up_or_del 
       AFTER UPDATE OR DELETE 
       ON report_manager_schema.system_user_allowed_reports  
       FOR EACH ROW  

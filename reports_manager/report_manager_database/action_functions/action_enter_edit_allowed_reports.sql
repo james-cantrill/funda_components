@@ -1,25 +1,27 @@
 /* The function action_enter_edit_allowed_reports
 
 
-	_in_data:	{
-					target_login:      -- can not be NULL
-					report_id:       -- can not be NULL
-                    report_name:
-                    viewable: BOOLEAN   -- can not be NULL
-					changing_user_login:     -- can not be NULL
-				}
+	_in_data:	
+	{
+		target_login:      -- can not be NULL
+		report_id:       -- can not be NULL
+		report_name:
+		viewable: BOOLEAN   -- can not be NULL
+		changing_user_login:     -- can not be NULL
+	}
 			
 * The json object returned by the function, _out_json, is defined  below.
 
-	_out_json:	{
-					result_indicator:
-					message:
-					target_login:
-					report_id:
-					report_name:
-					viewable:
-					changing_user_login:
-				}
+	_out_json:	
+	{
+		result_indicator:
+		message:
+		target_login:
+		report_id:
+		report_name:
+		viewable:
+		changing_user_login:
+	}
 				
 
 */
@@ -69,7 +71,7 @@ BEGIN
                 'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text
                 ));		
        
-    ELSIF (SELECT _in_data ->> 'task')::text IS NULL THEN  
+    ELSIF (SELECT _in_data ->> 'viewable')::text IS NULL THEN  
         _message := (SELECT 'The viewable parameter is missing so the visibility of the report CAN NOT be changed, please resubmit with complete data.');
         _out_json :=  (SELECT json_build_object(
                 'result_indicator', 'Failure',
@@ -93,7 +95,7 @@ BEGIN
                 'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text
                 ));		
                 
-    ELSIF (SELECT _in_data ->> 'report_id')::text IS NULL) THEN  
+    ELSIF (SELECT _in_data ->> 'report_id')::text IS NULL THEN  
         _message := (SELECT 'The the report_id is missing so the visibility of the report CAN NOT be changed, please resubmit with complete data.');
         _out_json :=  (SELECT json_build_object(
                 'result_indicator', 'Failure',
@@ -143,7 +145,7 @@ BEGIN
                 'changing_user_login', (SELECT _in_data ->> 'changing_user_login')::text
                 ));	
         ELSIF _target_sysuser_id IS NULL THEN   -- target user does not exist
-           _message := 'The target user specified by the target_login, ' || (SELECT _in_data ->> 'target_login')::text || ' DOES NOT EXIST. Nothng was changed.';
+           _message := 'The target user specified by the target_login, ' || (SELECT _in_data ->> 'target_login')::text || ', DOES NOT EXIST. Nothng was changed.';
             _out_json :=  (SELECT json_build_object(
                 'result_indicator', 'Failure',
                 'message', _message,
@@ -175,17 +177,17 @@ BEGIN
 					)
 				SELECT
 					_target_sysuser_id,
-					(SELECT _in_data ->> 'login')::text,
+					(SELECT _in_data ->> 'target_login')::text,
 					(SELECT _in_data ->> 'report_id')::uuid,
 					_report_name_from_id,
-					(SELECT _in_data ->> 'task')::BOOLEAN,
+					(SELECT _in_data ->> 'viewable')::BOOLEAN,
 					LOCALTIMESTAMP (0),
 					(SELECT _in_data ->> 'changing_user_login')::text
 				;
 				
-				_message := 'The report ' || _report_name || ' is now VISIBLE to ' ||  _firstname || ' ' || _lastname ;		
+				_message := (SELECT 'The visibility of the report, ' || _report_name_from_id  || ', has been set to ' || (SELECT _in_data ->> 'viewable')::text || ' for ' ||  (SELECT _in_data ->> 'target_login')::text);	
                 _out_json :=  (SELECT json_build_object(
-                    'result_indicator', 'Failure',
+                    'result_indicator', 'Success',
                     'message', _message,
                     'target_login', (SELECT _in_data ->> 'target_login')::text,
                     'report_id', (SELECT _in_data ->> 'report_id')::text,
@@ -197,15 +199,15 @@ BEGIN
             ELSE   -- update the existing entry
             
             UPDATE	report_manager_schema.system_user_allowed_reports
-					   SET	report_viewable = TRUE,
+					   SET	report_viewable = (SELECT _in_data ->> 'viewable')::BOOLEAN,
 							datetime_report_viewable_changed = LOCALTIMESTAMP (0)
-					WHERE	login = (SELECT _in_data ->> 'login')::text
-					  AND	report_id = _report_id
+					WHERE	login = (SELECT _in_data ->> 'target_login')::text
+					  AND	report_id = (SELECT _in_data ->> 'report_id')::uuid
 					;
 				
-					_message := (SELECT 'The report ' || _report_name_from_id  || ' has been updated to visible for ' ||  (SELECT _in_data ->> 'target_login')::text);
+					_message := (SELECT 'The visibility of the report, ' || _report_name_from_id  || ', has been updated to ' || (SELECT _in_data ->> 'viewable')::text || ' for ' ||  (SELECT _in_data ->> 'target_login')::text);
                     _out_json :=  (SELECT json_build_object(
-                    'result_indicator', 'Failure',
+                    'result_indicator', 'Success',
                     'message', _message,
                     'target_login', (SELECT _in_data ->> 'target_login')::text,
                     'report_id', (SELECT _in_data ->> 'report_id')::text,
