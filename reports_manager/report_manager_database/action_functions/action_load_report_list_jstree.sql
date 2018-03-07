@@ -90,7 +90,7 @@ BEGIN
 							));
 	
 	_output_authorized_json := (SELECT * FROM system_user_schema.util_is_user_authorized (_input_authorized_json));
-	
+
 	_authorized_result := (SELECT _output_authorized_json ->> 'authorized')::boolean;
 	
 	IF _authorized_result  THEN
