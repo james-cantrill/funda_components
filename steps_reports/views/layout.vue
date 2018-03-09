@@ -9,7 +9,7 @@
         </head>
         <body>
 			<div>
-				<h1>Demonstration of the System User Manager Component</h1>
+				<h1>STEPS Reports</h1>
 			</div>
             {{{app}}}
             {{{script}}}
