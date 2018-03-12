@@ -19,6 +19,7 @@ router.get('/', function(req, res){
 
 router.get('/system_user_manager/user_login', function (req, res) {
 	user_login = req.query.login;
+	console.log (req.query);
 	act ({  role:'system_user_manager', 
 	        cmd:'user_login', 
 			_in_data: {

@@ -46,8 +46,9 @@ module.exports = function system_user_manager( options ) {
 	});
 
 	this.add({role:'system_user_manager', cmd:'user_login'}, function (msg, respond) {
- 		//console.log ('In user_login');
-		//console.log (msg._in_data);
+ 		console.log ('In user_login');
+		console.log (cn);
+		console.log (msg._in_data);
 		db.func('system_user_schema.action_user_login', msg._in_data)
 		.then(function (data) {
 			//console.log("DATA:", data); // print data;
