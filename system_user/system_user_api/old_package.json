@@ -1,0 +1,20 @@
+{
+  "name": "system_user_api",
+  "version": "1.0.0",
+  "description": "The system_user_api is a microservice exposing the actions (functions) needed to manage the users of a system. These actions change the state of the system_user model",
+  "main": "system_user_api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node system_user_api.js"
+  },
+  "author": "Jim Cantrill",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "pg": "^7.4.1",
+    "pg-promise": "^8.2.2",
+    "seneca": "^3.4.3"
+  }
+}
