@@ -7,6 +7,10 @@ var user_login;
 var seneca = require('seneca')();
 var Promise = require('bluebird');
 
+const Cors = require("cors");
+
+router.use(Cors());
+
 var act = Promise.promisify(seneca.act,  {context: seneca});
 seneca.use( require('./system_user_manager.js') );
 
@@ -16,7 +20,7 @@ router.get('/', function(req, res){
 
 router.get('/system_user_manager/user_login', function (req, res) {
 	user_login = req.query.login;
-	
+	//console.log (req.query);
 	act ({  role:'system_user_manager', 
 	        cmd:'user_login', 
 			_in_data: {

@@ -51,7 +51,7 @@ module.exports = function system_user_manager( options ) {
 		//console.log (msg._in_data);
 		db.func('system_user_schema.action_user_login', msg._in_data)
 		.then(function (data) {
-			console.log("DATA:", data); // print data;
+			//console.log("DATA:", data); // print data;
 			respond (null, data);
 		})
 		.catch(function (error) {
