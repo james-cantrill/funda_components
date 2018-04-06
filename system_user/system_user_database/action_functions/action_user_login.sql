@@ -109,7 +109,7 @@ BEGIN
 		
 	ELSE	-- calling user is not authorized
 
-		_message := 'The user ' || _submited_login || ' IS NOT Authorized to access  the system (login).';
+		_message := 'The user ' || _submited_login || ' IS NOT Authorized to access the system.';
 
 		_out_json :=  (SELECT json_build_object(
 							'result_indicator', 'Failure',
