@@ -1,0 +1,21 @@
+{
+  "name": "reports_mamager_api",
+  "version": "1.0.0",
+  "description": "The reports_mamager_api is a microservice exposing the actions (functions) needed to manage the reports for a system.",
+  "main": "reports_manager_api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node reports_manager_api.js"
+  },
+  "author": "Jim Cantrill",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "pg": "^7.4.1",
+    "pg-promise": "^5.3.3",
+    "seneca": "^3.4.3"
+  }
+}
