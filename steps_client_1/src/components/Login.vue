@@ -27,7 +27,8 @@
 </template>
 
 <script>
-
+/* eslint-disable */
+var _result_message = '';
 export default {
   name: 'Login',
   data () {
@@ -41,27 +42,44 @@ export default {
 
   methods: {
     login () {
+      
       this.axios.get('http://localhost:3000/system_user_manager/user_login?login=' + this.username + '&password=' + this.password)
         .then(request => this.loginSuccessful(request))
         .catch(function (error) {
-            console.log('in error')
-			console.log(JSON.stringify(error))
-			//if (error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
+          console.log('in error')
+          console.log(JSON.stringify(error))
+          // if (error.response) {
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers)
           //  }
         })
     },
 
     loginSuccessful (req) {
-      if (req.data.result_indicator == 'Failure' ){
-           this.msg = req.data.message;
-          this.$router.replace(this.$route.query.redirect || '/');
+      if (req.data.result_indicator == 'Failure'){
+        this.msg = req.data.message;
+        this.$router.replace(this.$route.query.redirect || '/');
       } else {
-         this.$router.replace(this.$route.query.redirect || '/home')
+	  this.axios.get('http://localhost:4000/report_manager/load_report_list?login=' + this.username)
+          .then(request => this.reportsReturned(request))
+          .catch(function (error) {
+            console.log(error);
+          });
       }
-    }
+    },
+
+     reportsReturned (req) {
+       console.log('in response from load_report_list');
+       console.log(JSON.stringify (req));
+       this.msg = req.data.message;
+	   console.log (this.msg);
+	   hm_msg = req.data.message;
+       this.$router.replace(this.$route.query.redirect || '/home')
+	 
+	 }
+
+    
   }
 }
 </script>

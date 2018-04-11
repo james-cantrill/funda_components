@@ -1,6 +1,6 @@
 <template lang="html">
     <div>
-        <h1>{{msg}}</h1>
+        <h1>{{hm_msg}}</h1>
 
             <form class="logout" action="/system_user_manager/user_logout" method="get">
                 <button class="btn-medium" type="submit">Log Out</button>
@@ -14,7 +14,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      msg: 'Welcome to STEPS Reports'
+      hm_msg: ''
     }
   }
 }
