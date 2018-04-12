@@ -28,7 +28,8 @@
 
 <script>
 /* eslint-disable */
-var _result_message = '';
+import {globalStore} from '../main.js'
+
 export default {
   name: 'Login',
   data () {
@@ -36,51 +37,41 @@ export default {
       username: '',
       password: '',
       error: false,
-      msg: 'Welcome to STEPS Reports'
+      msg: 'Please Log In',
+      localvar: globalStore.userLogin
+    }
+  },
+  
+  computed: {
+    computedvar: function () {
+      return globalStore.userLogin
     }
   },
 
-  methods: {
-    login () {
-      
+methods: {
+    login () {      
       this.axios.get('http://localhost:3000/system_user_manager/user_login?login=' + this.username + '&password=' + this.password)
         .then(request => this.loginSuccessful(request))
         .catch(function (error) {
           console.log('in error')
           console.log(JSON.stringify(error))
-          // if (error.response) {
-          console.log(error.response.data);
-          console.log(error.response.status);
-          console.log(error.response.headers)
-          //  }
         })
     },
 
     loginSuccessful (req) {
+      globalStore.userLogin = this.username
+      console.log ('changed global: ' + globalStore.userLogin)
       if (req.data.result_indicator == 'Failure'){
         this.msg = req.data.message;
         this.$router.replace(this.$route.query.redirect || '/');
       } else {
-	  this.axios.get('http://localhost:4000/report_manager/load_report_list?login=' + this.username)
-          .then(request => this.reportsReturned(request))
-          .catch(function (error) {
-            console.log(error);
-          });
-      }
-    },
-
-     reportsReturned (req) {
-       console.log('in response from load_report_list');
-       console.log(JSON.stringify (req));
-       this.msg = req.data.message;
-	   console.log (this.msg);
-	   hm_msg = req.data.message;
        this.$router.replace(this.$route.query.redirect || '/home')
-	 
-	 }
+      }
+    }
 
     
-  }
+  } 
+  
 }
 </script>
 
