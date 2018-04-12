@@ -32,7 +32,7 @@ router.get('/system_user_manager/user_login', function (req, res) {
 		var returned_json = JSON.parse (JSON.stringify (result));
 		var out_data = returned_json[0].action_user_login;
 		user_name = out_data.firstname + ' ' + out_data.lastname;
-		
+		//console.log(out_data);
 		res.send (out_data);
 		
 	  })
