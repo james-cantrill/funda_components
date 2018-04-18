@@ -1,11 +1,11 @@
 <template lang="html">
     <div>
         <h1>{{hm_msg}}</h1>
-
             <form class="logout" @submit.prevent="logout">
                 <button class="btn-medium" type="submit">Log Out</button>
             </form>
         </div>
+
 </template>
 
 <script>
@@ -21,6 +21,7 @@ export default {
       localvar: globalStore.userLogin
     }
   },
+
   beforeCreate() {
     console.log('global login = ' + globalStore.userLogin)
     this.axios.get('http://localhost:4000/report_manager/load_report_list?login=' + globalStore.userLogin)
