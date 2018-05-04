@@ -4,6 +4,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VJstree from 'vue-jstree'
 
 import App from './App'
 import router from './router'
@@ -24,6 +25,10 @@ export const globalStore = new Vue({
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: { 
+      App, 
+      VJstree
+    },
+
   template: '<App/>'
 })
