@@ -5,9 +5,10 @@ block content
     h1= name
     
     div
-        form(action="/enter_user_data" method="get" class="enter_unsheltered")
-            button(type="submit" class="btn-medium") Enter a New User
+        div class="well" id="reporttreeview_json"
         br
         
         form(action="/system_user_manager/user_logout" method="get" class="logout")
             button(type="submit" class="btn-medium") Log Out
+    script
+      include /javascripts/reports_tree.js
