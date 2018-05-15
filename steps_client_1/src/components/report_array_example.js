@@ -76,4 +76,3 @@ get all allowed reports with parent folder
 	convert each report to a json object
 	conver report jsons to the folder's children array
 	
-	
