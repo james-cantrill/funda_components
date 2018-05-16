@@ -22,6 +22,21 @@
 		report_entry_json	json
 	);
 	
+	DROP TABLE IF EXISTS folder_report_list;
+
+	CREATE TEMPORARY TABLE folder_report_list (
+		id	text,
+		text	text,  -- report name
+		value	text,
+		icon	text,
+		children	json
+	);
+
+	DROP TABLE IF EXISTS folder_entries;
+	
+	CREATE TEMPORARY TABLE folder_entries (
+		folder_entry_json	json
+	);
 	
 	INSERT INTO allowed_reports (
 		id,
@@ -42,7 +57,7 @@
 	;
 
 
-INSERT INTO report_entries (
+	INSERT INTO report_entries (
 			report_entry_json
 			)
 			SELECT
@@ -56,13 +71,40 @@ INSERT INTO report_entries (
 
 --SELECT json_agg (SELECT ROW (report_entry_json) FROM report_entries);
 
-SELECT
-	r.containing_folder_name,
-	r.report_id::text,
-	json_agg (re.report_entry_json) AS children
-FROM	report_manager_schema.reports r,
-		report_entries re
-WHERE	(re.report_entry_json ->> 'id')::text = r.report_id::text
-GROUP BY r.containing_folder_name
-;
+	INSERT INTO folder_report_list (
+		id,
+		text,  
+		value,
+		icon,
+		children
+		)
+	SELECT
+		rf.folder_name,
+		rf.folder_display_name,
+		rf.folder_description,
+		'',
+		json_agg (re.report_entry_json)
+	FROM	report_manager_schema.report_folders rf,
+			report_manager_schema.reports r,
+			report_entries re
+	WHERE	(re.report_entry_json ->> 'id')::text = r.report_id::text
+	  AND	r.containing_folder_name = rf.folder_name
+	GROUP BY
+		rf.folder_name,
+		rf.folder_display_name,
+		rf.folder_description
+	;
 
+--	SELECT * FROM folder_report_list;
+	
+	INSERT INTO folder_entries (
+		folder_entry_json
+		)
+			SELECT
+			row_to_json (folders_row)
+		FROM (	SELECT *
+				FROM	folder_report_list
+		  ) folders_row
+		; 
+		
+	SELECT * FROM folder_entries;
