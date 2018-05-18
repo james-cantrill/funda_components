@@ -87,7 +87,7 @@ BEGIN
 			r.report_id::text,
 			r.report_name,
 			r.description,
-			'jstree-file'
+			'report'
 		FROM	report_manager_schema.reports r,
 				report_manager_schema.system_user_allowed_reports suap
 		WHERE	r.report_id = suap.report_id
@@ -120,7 +120,7 @@ BEGIN
 			rf.folder_name,
 			rf.folder_display_name,
 			rf.folder_description,
-			'',
+			'folder',
 			array_agg (re.report_entry_json)
 		FROM	report_manager_schema.report_folders rf,
 				report_manager_schema.reports r,
