@@ -15,7 +15,8 @@ Vue.config.productionTip = false
 
 export const globalStore = new Vue({
   data: {
-    userLogin: 'My Name'
+    userLogin: 'My Name',
+	userFullName: 'John Doe'
   }
 })
 
