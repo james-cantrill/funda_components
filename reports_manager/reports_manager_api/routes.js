@@ -20,7 +20,7 @@ router.get('/', function(req, res){
 
 router.get('/report_manager/load_report_list', function (req, res) {
 	user_login = req.query.login;
-	console.log (req.query);
+	//console.log (req.query);
 	act ({  role:'report_manager', 
 	        cmd:'load_report_list', 
 			_in_data: {
