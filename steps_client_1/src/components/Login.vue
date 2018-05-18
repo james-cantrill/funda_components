@@ -60,7 +60,8 @@ methods: {
 
     loginSuccessful (req) {
       globalStore.userLogin = this.username
-      console.log ('changed global: ' + globalStore.userLogin)
+	  globalStore.userFullName = req.data.firstname + ' ' + req.data.lastname
+      //console.log ('changed global: ' + globalStore.userLogin)
       if (req.data.result_indicator == 'Failure'){
         this.msg = req.data.message;
         this.$router.replace(this.$route.query.redirect || '/');
