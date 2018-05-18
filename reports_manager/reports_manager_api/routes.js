@@ -28,10 +28,8 @@ router.get('/report_manager/load_report_list', function (req, res) {
 			}
 		})
 	  .then (function (result) {
-		console.log (result);
 		var returned_json = JSON.parse (JSON.stringify (result));
-		var out_data = returned_json[0].action_load_report_list_jstree;
-		console.log (out_data);
+		var out_data = returned_json[0].action_load_report_list_vue_jstree;
 		
 		res.send (out_data);
 		

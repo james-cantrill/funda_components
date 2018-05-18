@@ -46,11 +46,8 @@ module.exports = function report_manager( options ) {
 	
 
 	function list_reports (msg, done) {
-		console.log ('in list_reports');
-		console.log (msg._in_data);
-		var result = db.func('report_manager_schema.action_load_report_list_jstree', msg._in_data)
+		var result = db.func('report_manager_schema.action_load_report_list_vue_jstree', msg._in_data)
 			.then (function (data) {
-				console.log (data);
 				done(null, data);
 			})
 			.catch (function (error) {
