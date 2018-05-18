@@ -1,11 +1,4 @@
 
-	DROP TABLE IF EXISTS allowed_enities;
-
-	CREATE TEMPORARY TABLE allowed_enities
-		entity_id	text,  -- report_id for reports and folder_name for folders
-		parent_id	text,
-		entity_json	json
-	);
 
 	DROP TABLE IF EXISTS allowed_reports;
 
@@ -29,7 +22,7 @@
 		text	text,  -- report name
 		value	text,
 		icon	text,
-		children	json
+		children	json []
 	);
 
 	DROP TABLE IF EXISTS folder_entries;
@@ -52,7 +45,7 @@
 	FROM	report_manager_schema.reports r,
 			report_manager_schema.system_user_allowed_reports suap
 	WHERE	r.report_id = suap.report_id
-	  AND	suap.login = 'opal'
+	  AND	suap.login = 'muser'
 	  AND	suap.report_viewable = TRUE
 	;
 
@@ -67,10 +60,6 @@
 		  ) reports_row
 		; 
 
---SELECT report_entry_json FROM report_entries;
-
---SELECT json_agg (SELECT ROW (report_entry_json) FROM report_entries);
-
 	INSERT INTO folder_report_list (
 		id,
 		text,  
@@ -83,7 +72,7 @@
 		rf.folder_display_name,
 		rf.folder_description,
 		'',
-		json_agg (re.report_entry_json)
+		array_agg (re.report_entry_json)
 	FROM	report_manager_schema.report_folders rf,
 			report_manager_schema.reports r,
 			report_entries re
@@ -107,4 +96,29 @@
 		  ) folders_row
 		; 
 		
-	SELECT * FROM folder_entries;
+	SELECT json_agg (folder_entry_json) FROM folder_entries;
+
+/*	SELECT DISTINCT
+		rf.parent_folder_name,
+		rf.folder_name AS child_folder
+	FROM	allowed_reports ar,
+			report_manager_schema.reports r,
+			report_manager_schema.report_folders rf
+	WHERE	ar.id = r.report_id::text
+	  AND	r.containing_folder_name = rf.folder_name
+	;
+
+	SELECT DISTINCT
+		parent_folder_name,
+		folder_name AS child_folder
+	FROM	report_manager_schema.report_folders 
+	WHERE	folder_name IN (SELECT parent_folder_name 
+								FROM report_manager_schema.report_folders rf,
+									allowed_reports ar,
+									report_manager_schema.reports r
+								WHERE	ar.id = r.report_id::text
+								  AND	r.containing_folder_name = rf.folder_name
+								)
+	  AND	parent_folder_name IS NOT NULL
+	;
+*/
