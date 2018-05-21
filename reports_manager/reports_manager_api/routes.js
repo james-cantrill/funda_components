@@ -14,8 +14,9 @@ router.use(Cors());
 var act = Promise.promisify(seneca.act,  {context: seneca});
 seneca.use( require('./report_manager.js') );
 
-router.get('/', function(req, res){  
-  res.json({'response': 'made api contact'});
+router.get('/report_manager', function(req, res){  
+  console.log ('in routes /report_manager');
+  res.json({'response': 'made contact with report_manager/'});
 });
 
 router.get('/report_manager/load_report_list', function (req, res) {
@@ -53,7 +54,7 @@ router.get('/report_manager/load_selected_report', function (req, res) {
 		})
 	  .then(function (result) {
 		var returned_json = JSON.parse (JSON.stringify (result));
-		var out_data = returned_json[0].load_selected_report;
+		var out_data = returned_json[0].action_load_selected_report;
 		
 		res.send (out_data);
 	  })

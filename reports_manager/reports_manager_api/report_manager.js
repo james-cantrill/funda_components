@@ -60,6 +60,7 @@ module.exports = function report_manager( options ) {
 		console.log (msg._in_data);
 		var result = db.func('report_manager_schema.action_load_selected_report', msg._in_data)
 			.then (function (data) {
+				console.log (data);
 				done(null, data);
 			})
 			.catch (function (error) {
