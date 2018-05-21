@@ -1,7 +1,6 @@
 <template lang="html">
     <div>
         <h1>{{wlcm_msg}}</h1>
-
         <div style="width:900px; margin: 0 auto; ">
             <div style="width:69%; display:inline-block; vertical-align: top; ">
                 <p style="text-align:left">{{hm_msg}}</p>
@@ -82,7 +81,7 @@ export default {
       this.editingItem = node.model
       this.itemDescription = node.model.value
       this.reportName = node.model.text
-	  this.reportId = node.model.text
+	  this.reportId = node.model.id
       console.log('report selected = ' + this.reportSelected)
       console.log('report name = ' + this.reportName)
       if (node.model.icon == 'folder') {
@@ -99,8 +98,10 @@ export default {
     },
 
      loadReport () {      
-      console.log('in loadReport')    
-      this.axios.get('http://localhost::4000/report_manager/load_selected_report?login=' + globalStore.userLogin + 'report_id=' + this.reportId)
+      console.log('in loadReport')
+      var rptUrl = 'http://localhost:4000/report_manager/load_selected_report?login=' + globalStore.userLogin + '&report_id=' + this.reportId
+      console.log ('rptUrl = ' + rptUrl)  
+      this.axios.get(rptUrl)
         .then(request => this.reportLoaded(request))
         .catch(function (error) {
           console.log('in error')
