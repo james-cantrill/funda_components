@@ -1,6 +1,9 @@
 <template lang="html">
     <div>
         <h1>{{wlcm_msg}}</h1>
+        <div v-if="reportsLoadFailed" class="loadError">
+            <p>{{resultMsg}}</p>
+        </div>
         <div style="width:900px; margin: 0 auto; ">
             <div style="width:69%; display:inline-block; vertical-align: top; ">
                 <p style="text-align:left">{{hm_msg}}</p>
@@ -36,6 +39,8 @@ export default {
     return {
       hm_msg: 'Please Select a Report',
       wlcm_msg: 'Welcome ' + globalStore.userFullName,
+      resultMsg: '',
+      reportsLoadFailed: false,
       itemDescription: 'Description appears here',
       reportSelected: 'FALSE',
       reportId: '',
@@ -69,8 +74,12 @@ export default {
 
   methods: {  
     reportsReturned (req) {
-      //this.hm_msg = req.data.message;
+      if (req.data.result_indicator == 'Failure'){
+        this.resultMsg = req.data.message;
+        this.reportsLoadFailed = true
+      } else {
        this.report_json = JSON.parse(JSON.stringify (req.data.data));
+      }
      },
      
     itemClick (node) {
@@ -81,7 +90,7 @@ export default {
       this.editingItem = node.model
       this.itemDescription = node.model.value
       this.reportName = node.model.text
-	  this.reportId = node.model.id
+      this.reportId = node.model.id
       console.log('report selected = ' + this.reportSelected)
       console.log('report name = ' + this.reportName)
       if (node.model.icon == 'folder') {
@@ -110,12 +119,57 @@ export default {
     },
 
      reportLoaded (req) {
-        this.msg = req.data.message;
-        console.log(JSON.stringify (req));
-       // this.$router.replace(this.$route.query.redirect || '/');
+        console.log('In reportLoaded');
+        this.resetShowParams ();
+        globalStore.reportName = req.data.report_name;
+        globalStore.reportUrl = req.data.url;
+        globalStore.reportParams = req.data.parameters;
+        globalStore.reportParams.forEach(function(parameter){
+            console.log(parameter.parameter_name);
+            switch (parameter.parameter_name) {
+                case 'ReportStartDate':
+                  console.log ('In case ReportStartDate');
+                  globalStore.showReportStartDate = 1;
+                  globalStore.descriptionReportStartDate = parameter.parameter_description;
+                  break;
+                case 'ReportEndDate':
+                  console.log ('In case ReportEndDate');
+                  globalStore.showReportEndDate = 1;
+                  globalStore.descriptionReportEndDate = parameter.parameter_description;
+                  break;
+                case 'MonthStart':
+                  console.log ('In case MonthStart');
+                  globalStore.showMonthStart = 1;
+                  globalStore.descriptionMonthStart = parameter.parameter_description;
+                  break;
+                case 'ProgramIds':
+                  console.log ('In case ProgramIds');
+                  console.log ('showProgramIds = ' + globalStore.showProgramIds);
+                  globalStore.showProgramIds = 1;
+                  globalStore.descriptionProgramIds = parameter.parameter_description;
+                  console.log ('Reset ProgramIds');
+                  console.log (globalStore.showProgramIds);
+                  break;
+                case 'CocName':
+                  console.log ('In case CocName');
+                  globalStore.showCocName = 1;
+                  globalStore.descriptionCocName = parameter.parameter_description;
+                  break;
+              };
+        });
+        this.$router.replace(this.$route.query.redirect || '/runReport');
     },
 
-	logout () {      
+    resetShowParams () {
+         console.log ('In resetShowParams');
+         globalStore.showReportStartDate = 0;
+         globalStore.showReportEndDate = 0;
+         globalStore.showMonthStart = 0;
+         globalStore.showProgramIds = 0;
+         globalStore.showCocName = 0;
+    },
+     
+    logout () {      
       this.axios.get('http://localhost:3000/system_user_manager/user_logout?login=' + globalStore.userLogin)
         .then(request => this.logoutSuccessful(request))
         .catch(function (error) {
@@ -134,5 +188,7 @@ export default {
 </script>
 
 <style lang="css">
-
+  .loadError {
+    color: red
+  }
 </style>
