@@ -60,7 +60,7 @@ methods: {
 
     loginSuccessful (req) {
       globalStore.userLogin = this.username
-	  globalStore.userFullName = req.data.firstname + ' ' + req.data.lastname
+      globalStore.userFullName = req.data.firstname + ' ' + req.data.lastname
       //console.log ('changed global: ' + globalStore.userLogin)
       if (req.data.result_indicator == 'Failure'){
         this.msg = req.data.message;
