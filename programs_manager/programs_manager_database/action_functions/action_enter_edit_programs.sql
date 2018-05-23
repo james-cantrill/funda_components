@@ -79,12 +79,12 @@ BEGIN
 					);
 	
 -------- Does containing organization level exist? --------------------------------------------
-	_containing_level_id := (	SELECT
+/*	_containing_level_id := (	SELECT
 						organization_level_id
 					FROM	programs_manager_schema.organization_level
 					WHERE	organization_level_name = (SELECT _in_data ->> 'containing_level_name')::text
 					);
-	
+	*/
 ------------------------------------------------------------------------------
 
 
@@ -146,7 +146,7 @@ BEGIN
 							'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
 							));		
 							
-	ELSIF _containing_level_id IS NULL THEN -- Containing organization level does not exist
+	/*ELSIF _containing_level_id IS NULL THEN -- Containing organization level does not exist
 	
 		_message := (SELECT 'The specified containing organizational level ' || (SELECT _in_data ->> 'containing_level_name')::text|| ' does not exist so the Program CAN NOT be entered.') ;
 		_out_json :=  (SELECT json_build_object(
@@ -161,7 +161,7 @@ BEGIN
 							'changed_by_user_login', (SELECT _in_data ->> 'changed_by_user_login')::text,
 							'enter_or_update', (SELECT _in_data ->> 'enter_or_update')::text
 							));		
-								
+								*/
 	ELSE
 	
 		_enter_update := (SELECT _in_data ->> 'enter_or_update')::text;
