@@ -1,8 +1,19 @@
 <template>
   <div id="app">
-    <img src="./assets/steps_logo_small.jpg">
-    <router-view/>
+
+     <div style="width:900px; height:90px; margin: 0 auto;  horizontal-align: left">
+        <div  style="width:24%; height:90px; display:inline-block; vertical-align: top; horizontal-align: left">
+            <img src="./assets/steps_logo_small.jpg">
+        </div>
+        <div style="width:70%; height:90px; display:inline-block; vertical-align: center; ">
+            <p3 class="title">STEPS Reports</p3>
+        </div>
+    </div>
+
+      <router-view/>
+
   </div>
+
 </template>
 
 <script>
@@ -20,4 +31,12 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.title { 
+    font-size: 70px;
+    font-weight: bold;
+    color: green;
+	vertical-align: bottom;
+}
+
 </style>
