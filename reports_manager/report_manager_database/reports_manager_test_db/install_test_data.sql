@@ -262,6 +262,14 @@ BEGIN
 	RAISE NOTICE 'Result = %', (SELECT _output_json ->> 'result_indicator')::text;
 END$$;
 
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'SET UP the user rwill';
+	_output_json := (SELECT * FROM system_user_schema.action_add_new_user ('{"firstname": "Richard", "lastname": "Williams", "login": "rwill", "password":"road", "changing_user_login": "muser"}'));
+	RAISE NOTICE 'Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+END$$;
+
 ------------------------------------------------------------------------------
 -- authorize system users to load and run reports
 DO $$
