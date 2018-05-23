@@ -80,11 +80,11 @@ REM Install action functions
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\utility_functions\trig_log_organizations_history.sql 1>> install_reports_manager_test_db.log 2>>&1 
 
-"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f ..\action_enter_edit_organization_level.sql 1>> install_reports_manager_test_db.log 2>>&1 
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\action_functions\action_enter_edit_organization_level.sql 1>> install_reports_manager_test_db.log 2>>&1 
  
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\utility_functions\trig_log_organization_level_history.sql 1>> install_reports_manager_test_db.log 2>>&1 
 
-"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f ..\action_enter_edit_programs.sql 1>> install_reports_manager_test_db.log 2>>&1 
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\action_functions\action_enter_edit_programs.sql 1>> install_reports_manager_test_db.log 2>>&1 
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\utility_functions\trig_log_programs_history.sql 1>> install_reports_manager_test_db.log 2>>&1 
 
