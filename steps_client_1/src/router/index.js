@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 import Login from '@/components/Login'
 import Home from '@/components/Home'
+import runReport from '@/components/runReport'
 
 Vue.use(Router)
 
@@ -17,6 +18,11 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/runReport',
+      name: 'runReport',
+      component: runReport
     }
   ]
 })
