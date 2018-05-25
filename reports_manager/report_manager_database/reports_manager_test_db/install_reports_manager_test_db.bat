@@ -92,6 +92,8 @@ REM Install action functions
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\utility_functions\trig_log_user_allowed_programs_history.sql 1>> install_reports_manager_test_db.log 2>>&1 
 
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\programs_manager\programs_manager_database\action_functions\action_load_program_list_vue_jstree.sql 1>> install_reports_manager_test_db.log 2>>&1 
+
 REM  **************************************************************
 
 REM install the report_manager_schema
@@ -159,3 +161,6 @@ REM Install the master user
 REM **************************************************************************
 REM Install the test data
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\reports_manager_test_db\install_test_data.sql  1> install_reports_manager_test_data.log 2>&1
+
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d reports_manager_test_db  -p 5432 -f C:\funda_components\reports_manager\report_manager_database\reports_manager_test_db\install_program_manager_test_data.sql 1> install_program_manager_test_data.log 2>&1 
+
