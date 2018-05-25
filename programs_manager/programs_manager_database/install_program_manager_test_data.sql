@@ -569,3 +569,26 @@ BEGIN
 	RAISE NOTICE '';
 END$$;		
 
+-- ***************************************************************************
+-- 4. allow users to list programs
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'Allow user - opal - to list programs';
+	_output_json := (SELECT * FROM system_user_schema.action_change_user_allowed_actions ('{"login": "opal", "service":"programs_manager", "action":"list_user_visible_programs", "task":"allow", "changing_user_login": "muser"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;		
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'Allow user - json - to list programs';
+	_output_json := (SELECT * FROM system_user_schema.action_change_user_allowed_actions ('{"login": "jappl", "service":"programs_manager", "action":"list_user_visible_programs", "task":"allow", "changing_user_login": "muser"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;		
+
