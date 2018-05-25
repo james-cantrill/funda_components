@@ -55,7 +55,6 @@ router.get('/report_manager/load_selected_report', function (req, res) {
 	  .then(function (result) {
 		var returned_json = JSON.parse (JSON.stringify (result));
 		var out_data = returned_json[0].action_load_selected_report;
-		
 		res.send (out_data);
 	  })
 	  .catch(function (err) {
