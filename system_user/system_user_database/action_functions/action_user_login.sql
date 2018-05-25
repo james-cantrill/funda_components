@@ -87,7 +87,7 @@ BEGIN
 			
 			
 			 _out_json :=  (SELECT json_build_object(
-								'result_indicator', 'Successs',
+								'result_indicator', 'Success',
 								'message', _message,
 								'sysuser_id', _sysuser_id,
 								'firstname', _firstname,

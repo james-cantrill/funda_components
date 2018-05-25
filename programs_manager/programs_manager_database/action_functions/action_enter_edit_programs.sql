@@ -222,7 +222,7 @@ BEGIN
 				_message := (SELECT 'The program ' || (SELECT _in_data ->> 'program_name')::text || ' has been added to the system.');
 
 				_out_json :=  (SELECT json_build_object(
-								'result_indicator', 'Successs',
+								'result_indicator', 'Success',
 								'message', _message,
 								'program_id', _program_id,
 								'program_name', (SELECT _in_data ->> 'program_name')::text,

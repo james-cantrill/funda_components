@@ -67,7 +67,7 @@ BEGIN
 			_message := (SELECT  _firstname || ' ' || _lastname || ', is logged out.');
 			
 			 _out_json :=  (SELECT json_build_object(
-								'result_indicator', 'Successs',
+								'result_indicator', 'Success',
 								'message', _message,
 								'sysuser_id', _sysuser_id,
 								'firstname', _firstname,

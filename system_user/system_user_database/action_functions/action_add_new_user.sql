@@ -147,7 +147,7 @@ BEGIN
 				_message := (SELECT 'The user, ' || _submited_firstname || ' ' || _submited_lastname || ', has been added to the system.');
 				
 				 _out_json :=  (SELECT json_build_object(
-									'result_indicator', 'Successs',
+									'result_indicator', 'Success',
 									'message', _message,
 									'sysuser_id', _sysuser_id,
 									'firstname', (SELECT _in_data ->> 'firstname')::text,
