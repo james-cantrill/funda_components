@@ -56,8 +56,6 @@ export default {
     },
 
   beforeCreate() {
-    //console.log('global login = ' + globalStore.userLogin)
-    //console.log('global userFullName = ' + globalStore.userFullName)
     this.axios.get('http://localhost:4000/report_manager/load_report_list?login=' + globalStore.userLogin)
       .then(request => this.reportsReturned(request))
           .catch(function (error) {
@@ -83,7 +81,6 @@ export default {
      },
      
     itemClick (node) {
-      console.log('node.model.icon = ' + node.model.icon)
       this.reportSelected = 'FALSE'
       this.reportName = ''
       this.editingNode = node
@@ -91,8 +88,6 @@ export default {
       this.itemDescription = node.model.value
       this.reportName = node.model.text
       this.reportId = node.model.id
-      console.log('report selected = ' + this.reportSelected)
-      console.log('report name = ' + this.reportName)
       if (node.model.icon == 'folder') {
         this.reportSelected = 'FALSE'
         this.runMsg = ''
@@ -102,14 +97,10 @@ export default {
           this.runMsg = 'Open ' + this.reportName
         }
       }
-      console.log('report selected = ' + this.reportSelected)
-      console.log('report name = ' + this.runMsg)
     },
 
      loadReport () {      
-      console.log('in loadReport')
-      var rptUrl = 'http://localhost:4000/report_manager/load_selected_report?login=' + globalStore.userLogin + '&report_id=' + this.reportId
-      console.log ('rptUrl = ' + rptUrl)  
+       var rptUrl ='http://localhost:4000/report_manager/load_selected_report?login=' + globalStore.userLogin + '&report_id=' + this.reportId 
       this.axios.get(rptUrl)
         .then(request => this.reportLoaded(request))
         .catch(function (error) {
@@ -119,36 +110,27 @@ export default {
     },
 
      reportLoaded (req) {
-        console.log('In reportLoaded');
         this.resetShowParams ();
         globalStore.reportName = req.data.report_name;
         globalStore.reportUrl = req.data.url;
         globalStore.reportParams = req.data.parameters;
         globalStore.reportParams.forEach(function(parameter){
-            console.log(parameter.parameter_name);
             switch (parameter.parameter_name) {
                 case 'ReportStartDate':
-                  console.log ('In case ReportStartDate');
                   globalStore.showReportStartDate = 1;
                   globalStore.descriptionReportStartDate = parameter.parameter_description;
                   break;
                 case 'ReportEndDate':
-                  console.log ('In case ReportEndDate');
                   globalStore.showReportEndDate = 1;
                   globalStore.descriptionReportEndDate = parameter.parameter_description;
                   break;
                 case 'MonthStart':
-                  console.log ('In case MonthStart');
                   globalStore.showMonthStart = 1;
                   globalStore.descriptionMonthStart = parameter.parameter_description;
                   break;
                 case 'ProgramIds':
-                  console.log ('In case ProgramIds');
-                  console.log ('showProgramIds = ' + globalStore.showProgramIds);
                   globalStore.showProgramIds = 1;
                   globalStore.descriptionProgramIds = parameter.parameter_description;
-                  console.log ('Reset ProgramIds');
-                  console.log (globalStore.showProgramIds);
                   break;
                 case 'CocName':
                   console.log ('In case CocName');
@@ -161,7 +143,6 @@ export default {
     },
 
     resetShowParams () {
-         console.log ('In resetShowParams');
          globalStore.showReportStartDate = 0;
          globalStore.showReportEndDate = 0;
          globalStore.showMonthStart = 0;
@@ -180,7 +161,6 @@ export default {
      
     logoutSuccessful (req) {
         this.msg = req.data.message;
-        //console.log(JSON.stringify (req));
         this.$router.replace(this.$route.query.redirect || '/');
     } 
   } 
