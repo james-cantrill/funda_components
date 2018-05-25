@@ -2,30 +2,33 @@
     <div>
         <h2>{{run_msg}}</h2>
 
-            <div v-if="showReportStartDate > 0" style="width:400; display:inline-block; vertical-align: top; border: dotted red;">
-				<div  style="width:47%; display:inline-block; vertical-align: top; horizontal-align: center; border: dotted green;">
-					<label>{{descriptionReportStartDate}}</label>
-					<date-picker v-model="valueReportStartDate" type="date" format="yyyy-MM-dd" lang="en"></date-picker>
-				</div>
-				<div  style="width:47%; display:inline-block; vertical-align: top; horizontal-align: center; border: dotted blue;">
-					<label>{{descriptionReportEndDate}}</label>
-					<date-picker v-model="valueReportStartDate" type="date" format="yyyy-MM-dd" lang="en"></date-picker>
-				</div>
+            <div v-if="showReportStartDate > 0" style="width:400; display:inline-block; vertical-align: top;">
+                <div  style="width:47%; display:inline-block; vertical-align: top; horizontal-align: center; ">
+                    <label>{{descriptionReportStartDate}}</label>
+                    <date-picker v-model="valueReportStartDate" type="date" format="yyyy-MM-dd" lang="en"></date-picker>
+                </div>
+                <div  style="width:47%; display:inline-block; vertical-align: top; horizontal-align: center; ">
+                    <label>{{descriptionReportEndDate}}</label>
+                    <date-picker v-model="valueReportEndDate" type="date" format="yyyy-MM-dd" lang="en"></date-picker>
+                </div>
             </div>
-			
-            <div v-if="showMonthStart > 0" style="width:400; display:inline-block; vertical-align: top; horizontal-align: center; border: dashed red;">
-				<label>{{descriptionMonthStart}}</label>
-				<date-picker v-model="valueMonthStart" type="date" format="yyyy-MM-dd" lang="en"></date-picker>
+
+            <div v-if="showMonthStart > 0" style="width:400; display:inline-block; vertical-align: top; horizontal-align: center; ">
+                <label>{{descriptionMonthStart}}</label>
+                <date-picker v-model="valueMonthStart" type="date" format="yyyy-MM-dd" lang="en"></date-picker>
             </div>
             <br><br>
-            <div v-if="showCocName > 0" style="width:200; display:inline-block; vertical-align: top; horizontal-align: center; border: dashed yellow;">
-				<label>{{descriptionCocName}}</label>
-				<textarea >List of Coc names is here</textarea>
-			</div>
+            <div v-if="showCocName > 0" style="width:200; display:inline-block; vertical-align: top; horizontal-align: center; ">
+                <label>{{descriptionCocName}}</label>
+                <textarea >List of Coc names is here</textarea>
+            </div>
 
-            <div v-if="showProgramIds > 0" style="width:500; display:inline-block; vertical-align: top; horizontal-align: center; border: solid blue;">
+            <div v-if="showProgramIds > 0" style="width:500; display:inline-block; vertical-align: top; horizontal-align: center; ">
+                <div v-if="reportsLoadFailed" class="loadError">
+                    <p>{{resultMsg}}</p>
+                </div>
                 <label>{{descriptionProgramIds}}</label>
-                <v-jstree :data="program_json" @item-click="itemClick" style="width:500px; height:400px; overflow:auto; overflow-x:auto; overflow-y:auto; border: solid red;" ></v-jstree>
+                <v-jstree :data="program_json" @item-click="itemClick" show-checkbox multiple  options ref="tree" style="width:500px; height:400px; overflow:auto; overflow-x:auto; overflow-y:auto; border: solid red;" ></v-jstree>
             </div>
 
             <br><br>
@@ -64,16 +67,18 @@ export default {
   name: 'runReport',
   data () {
     return {
-      run_msg: 'Running ' + globalStore.reportName + ' for ' + globalStore.userFullName,
+      run_msg: ' ' + globalStore.reportName,
       localvar: globalStore.userLogin,
       program_json: [],
+      resultMsg: '',
+      reportsLoadFailed: false,
       showReportStartDate:  globalStore.showReportStartDate,
       showReportEndDate: globalStore.showReportEndDate,
       showProgramIds: globalStore.showProgramIds,
       showMonthStart: globalStore.showMonthStart,
       showCocName: globalStore.showCocName,
-      valueReportStartDate: '',
-      valueReportEndDate: '',
+      valueReportStartDate: new Date(),
+      valueReportEndDate: new Date(),
       valueProgramIds: '',
       valueMonthStart: '',
       valueCocName: '',
@@ -82,7 +87,7 @@ export default {
       descriptionProgramIds: globalStore.descriptionProgramIds,
       descriptionMonthStart: globalStore.descriptionMonthStart,
       descriptionCocName: globalStore.descriptionCocName,
-      value1: 'Value1'
+      programIds: ''
     }
   },
 
@@ -92,14 +97,33 @@ export default {
     },
 
   created() {
-    console.log('report name= ' + globalStore.reportName);
-    console.log (this.showProgramIds);
+    console.log('In runReport.created ');
+    console.log ('showProgramIds = ' + this.showProgramIds);
+    if (this.showProgramIds > 0) {
+        this.axios.get('http://localhost:5000/programs_manager/load_program_list?login=' + globalStore.userLogin)
+      .then(request => this.programsReturned(request))
+          .catch(function (error) {
+            console.log(error);
+          });
+    };
   },
   
   methods: {  
 
    itemClick (node) {
-      console.log('node.model.icon = ')
+      console.log('node.model.text = ' + node.model.text);
+      
+    },
+
+    programsReturned (req) {
+        console.log('In programsReturned');
+      if (req.data.result_indicator == 'Failure'){
+           this.resultMsg = req.data.message;
+           this.reportsLoadFailed = true
+      } else {
+          this.program_json = JSON.parse(JSON.stringify (req.data.data));
+      }
+        
     },
 
     logout () {      
@@ -116,7 +140,22 @@ export default {
     },
 
     runReport () {      
-      console.log('report url = ' + globalStore.reportUrl);     
+      this.$refs.tree.handleRecursionNodeChilds(this.$refs.tree, node => {
+        if (node.model.selected == true) {
+           // console.log ('node.model.text = ' + node.model.text);
+			if (this.programIds < 4 ) {
+				this.programIds = node.model.id;
+			} else {
+				this.programIds = this.programIds + ', ' + node.model.id
+			};
+			
+        };
+    })
+    
+	console.log ('valueReportStartDate = ' + this.valueReportStartDate.toISOString().substring(0, 10));
+	console.log ('valueReportEndDate = ' + this.valueReportEndDate.toISOString().substring(0, 10));
+	console.log ('programIds = ' + this.programIds);
+	console.log('report url = ' + globalStore.reportUrl);     
       this.$router.replace(this.$route.query.redirect || '/Home');
     },
 
