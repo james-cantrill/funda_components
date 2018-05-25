@@ -32,11 +32,11 @@ export default {
   margin-top: 60px;
 }
 
-.title { 
+.title {
     font-size: 70px;
     font-weight: bold;
     color: green;
-	vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 </style>
