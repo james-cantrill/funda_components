@@ -18,18 +18,42 @@ export const globalStore = new Vue({
     userLogin: 'My Name',
     userFullName: 'John Doe',
     reportName: '',
-    reportParams: [],
+    reportParams:    [
+                        {
+                            parameter_name: '',
+                            parameter_description: '',
+                            parameter_value: ''
+                        }
+                    ],
     reportUrl: '',
     showReportStartDate: 0,
     showReportEndDate: 0,
     showProgramIds: 0,
     showMonthStart: 0,
     showCocName: 0,
+    showAgencyName: 0,
+    showCounty: 0,
+    showMonthStartDate: 0,
+    showPIT_date: 0,
+    showQuarterStart: 0,
+    showYearStartDate: 0,
+    showSelectedDate: 0,
+    showHmisProjectTypes: 0.
+    showIncludeCocFundedPrjctOnly: 0,
     descriptionReportStartDate: '',
     descriptionReportEndDate: '',
     descriptionProgramIds: '',
     descriptionMonthStart: '',
-    descriptionCocName: ''
+    descriptionCocName: '',
+    descriptionAgencyName: '',
+    descriptionCounty: '',
+    descriptionMonthStartDate: '',
+    descriptionPIT_date: '',
+    descriptionQuarterStart: '',
+    descriptionYearStartDate: '',
+    descriptionSelectedDate: '',
+    descriptionHmisProjectTypes: ''.
+    descriptionIncludeCocFundedPrjctOnly: ''
   }
 })
 

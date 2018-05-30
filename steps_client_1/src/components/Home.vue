@@ -110,6 +110,8 @@ export default {
     },
 
      reportLoaded (req) {
+        var numParams = req.data.parameters.length;
+        var paramName;
         this.resetShowParams ();
         globalStore.reportName = req.data.report_name;
         globalStore.reportUrl = req.data.url;
@@ -133,12 +135,48 @@ export default {
                   globalStore.descriptionProgramIds = parameter.parameter_description;
                   break;
                 case 'CocName':
-                  console.log ('In case CocName');
                   globalStore.showCocName = 1;
                   globalStore.descriptionCocName = parameter.parameter_description;
                   break;
+                case 'AgencyName':
+                  globalStore.showAgencyName = 1;
+                  globalStore.descriptionAgencyName = parameter.parameter_description;
+                  break;
+                case 'County':
+                  globalStore.showCounty = 1;
+                  globalStore.descriptionCounty = parameter.parameter_description;
+                  break;
+                case 'MonthStartDate':
+                  globalStore.showMonthStartDate = 1;
+                  globalStore.descriptionMonthStartDate = parameter.parameter_description;
+                  break;
+                case 'PIT_date':
+                  globalStore.showPIT_date = 1;
+                  globalStore.descriptionPIT_date = parameter.parameter_description;
+                  break;
+                case 'QuarterStart':
+                  globalStore.showQuarterStart = 1;
+                  globalStore.descriptionQuarterStart = parameter.parameter_description;
+                  break;
+                case 'YearStartDate':
+                  globalStore.showYearStartDate = 1;
+                  globalStore.descriptionYearStartDate = parameter.parameter_description;
+                  break;
+                case 'SelectedDate':
+                  globalStore.showSelectedDate = 1;
+                  globalStore.descriptionSelectedDate = parameter.parameter_description;
+                  break;
+                case 'HmisProjectTypes':
+                  globalStore.showHmisProjectTypes = 1;
+                  globalStore.descriptionHmisProjectTypes = parameter.parameter_description;
+                  break;
+                case 'IncludeCocFundedPrjctOnly':
+                  globalStore.showIncludeCocFundedPrjctOnly = 1;
+                  globalStore.descriptionIncludeCocFundedPrjctOnly = parameter.parameter_description;
+                  break;
               };
         });
+        console.log ('reportParams = ' + JSON.stringify(globalStore.reportParams));
         this.$router.replace(this.$route.query.redirect || '/runReport');
     },
 
@@ -147,7 +185,16 @@ export default {
          globalStore.showReportEndDate = 0;
          globalStore.showMonthStart = 0;
          globalStore.showProgramIds = 0;
-         globalStore.showCocName = 0;
+         globalStore.showCocName = 0;         
+         globalStore.showAgencyName = 0;
+         globalStore.showCounty = 0;
+         globalStore.showMonthStartDate = 0;
+         globalStore.showPIT_date = 0;
+         globalStore.showQuarterStart = 0;
+         globalStore.showYearStartDate = 0;
+         globalStore.showSelectedDate = 0;
+         globalStore.showHmisProjectTypes = 0;
+         globalStore.showIncludeCocFundedPrjctOnly = 0;
     },
      
     logout () {      
