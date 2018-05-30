@@ -28,7 +28,7 @@
                     <p>{{resultMsg}}</p>
                 </div>
                 <label>{{descriptionProgramIds}}</label>
-                <v-jstree :data="program_json" @item-click="itemClick" show-checkbox multiple  options ref="tree" style="width:500px; height:400px; overflow:auto; overflow-x:auto; overflow-y:auto; border: solid red;" ></v-jstree>
+                <v-jstree :data="program_json" @item-click="itemClick" show-checkbox multiple  options ref="tree" style="width:500px; height:400px; overflow:auto; overflow-x:auto; overflow-y:auto; " ></v-jstree>
             </div>
 
             <br><br>
@@ -140,22 +140,48 @@ export default {
     },
 
     runReport () {      
-      this.$refs.tree.handleRecursionNodeChilds(this.$refs.tree, node => {
-        if (node.model.selected == true) {
-           // console.log ('node.model.text = ' + node.model.text);
-			if (this.programIds < 4 ) {
-				this.programIds = node.model.id;
-			} else {
-				this.programIds = this.programIds + ', ' + node.model.id
-			};
-			
+        console.log ('in runreport metnhod');
+        if (this.showProgramIds > 0) {
+            this.$refs.tree.handleRecursionNodeChilds(this.$refs.tree, node => {
+                if (node.model.selected == true) {;
+                    if (this.programIds < 4 ) {
+                        this.programIds = node.model.id;
+                    } else {
+                        this.programIds = this.programIds + ', ' + node.model.id
+                    };
+                    
+                };
+            });
         };
-    })
-    
-	console.log ('valueReportStartDate = ' + this.valueReportStartDate.toISOString().substring(0, 10));
-	console.log ('valueReportEndDate = ' + this.valueReportEndDate.toISOString().substring(0, 10));
-	console.log ('programIds = ' + this.programIds);
-	console.log('report url = ' + globalStore.reportUrl);     
+        var rptMonthStart;
+        var rptStartDate =  (new Date(this.valueReportStartDate)).toISOString().substring(0, 10);
+        var rptEndDate = (new Date(this.valueReportEndDate)).toISOString().substring(0, 10);
+        if (this.showMonthStart > 0) {
+            rptMonthStart = (new Date(this.valueMonthStart)).toISOString().substring(0, 10)
+        };
+        var progIds = this.programIds;
+        var rptCoc = this.valueCocName;
+        var rptURl = globalStore.reportUrl
+        globalStore.reportParams.forEach(function(parameter){
+        switch (parameter.parameter_name) {
+            case 'ReportStartDate':
+              rptURl = rptURl + '&' + parameter.parameter_name + '=' + rptStartDate;
+              break;
+            case 'ReportEndDate':
+              rptURl = rptURl + '&' + parameter.parameter_name + '=' + rptEndDate;
+              break;
+            case 'MonthStart':
+              rptURl = rptURl + '&' + parameter.parameter_name + '=' + rptMonthStart;
+              break;
+            case 'ProgramIds':
+              rptURl = rptURl + '&' + parameter.parameter_name + '=' + progIds;
+              break;
+            case 'CocName':
+              rptURl = rptURl + '&' + parameter.parameter_name + '=' + rptCoc;
+              break;
+        };
+    });                                                                
+      window.open(rptURl);  
       this.$router.replace(this.$route.query.redirect || '/Home');
     },
 
@@ -174,5 +200,7 @@ export default {
      font-weight: bold;
      color: black;
  }
+ 
+ 
  
 </style>
