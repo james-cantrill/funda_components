@@ -5,8 +5,8 @@
         <div  style="width:24%; height:90px; display:inline-block; vertical-align: top; horizontal-align: left">
             <img src="./assets/steps_logo_small.jpg">
         </div>
-        <div style="width:70%; height:90px; display:inline-block; vertical-align: center; ">
-            <p3 class="title">STEPS Reports</p3>
+        <div style="width:70%; height:90px; display:inline-block; vertical-align: top;">
+            <div class="title" style=" height:70 px; width: 600px; ">STEPS Reports</div>
         </div>
     </div>
 
@@ -36,7 +36,7 @@ export default {
     font-size: 70px;
     font-weight: bold;
     color: green;
-    vertical-align: bottom;
+    vertical-align: top;
 }
 
 </style>
