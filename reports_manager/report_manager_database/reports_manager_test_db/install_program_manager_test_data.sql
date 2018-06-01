@@ -50,6 +50,66 @@ BEGIN
 	RAISE NOTICE '';
 END$$;
 
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'insert Catholic Charities of Livingston County';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Catholic Charities of Livingston County", "organization_description": "",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'insert Arbor Housing and Development';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Arbor Housing and Development", "organization_description": "",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'insert Catholic Charities of Steuben County';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Catholic Charities of Steuben County", "organization_description": "",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'insert Livingston County DSS';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Livingston County DSS", "organization_description": "",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'insert Catholic Charities of Tompkins/Tioga';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Catholic Charities of Tompkins/Tioga", "organization_description": "",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'insert Chautauqua Opportunities';
+	_output_json := (SELECT * FROM programs_manager_schema.action_enter_edit_organizations ('{"organization_name": "Chautauqua Opportunities", "organization_description": "",  "changing_user_login": "muser", "enter_or_update": "Enter"}'));
+	RAISE NOTICE 'TEST Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Message = %', (SELECT _output_json ->> 'message')::text;
+	RAISE NOTICE '';
+END$$;
+
 --****************************************************************************
 -- 2. Install programs
 
