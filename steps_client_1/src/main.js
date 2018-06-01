@@ -38,7 +38,7 @@ export const globalStore = new Vue({
     showQuarterStart: 0,
     showYearStartDate: 0,
     showSelectedDate: 0,
-    showHmisProjectTypes: 0.
+    showHmisProjectTypes: 0,
     showIncludeCocFundedPrjctOnly: 0,
     descriptionReportStartDate: '',
     descriptionReportEndDate: '',
@@ -52,7 +52,7 @@ export const globalStore = new Vue({
     descriptionQuarterStart: '',
     descriptionYearStartDate: '',
     descriptionSelectedDate: '',
-    descriptionHmisProjectTypes: ''.
+    descriptionHmisProjectTypes: '',
     descriptionIncludeCocFundedPrjctOnly: ''
   }
 })
