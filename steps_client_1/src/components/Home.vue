@@ -10,7 +10,7 @@
                 <v-jstree :data="report_json" @item-click="itemClick" style="width:620px; height:400px; overflow:auto; overflow-x:auto; overflow-y:auto;" ></v-jstree>
             </div>
             <div style="width:30%; display:inline-block;">
-                <textarea v-model="itemDescription" style="height:300px; width:100%;">
+                <textarea v-model="itemDescription" style="height:250px; width:100%; border: double green;">
                 </textarea>
 
                   <form  class="loadReport" @submit.prevent="loadReport">

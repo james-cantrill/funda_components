@@ -18,7 +18,7 @@
                     <br><br>
                 </div>
 
-                <div class="row">
+                <div class="row" style="horizontal-align: center">
                     <button type="submit" class="btn btn-large btn-primary">Sign in </button>
                 </div>
             </form>
