@@ -21,7 +21,7 @@ Vue.config.productionTip = false
 export const globalStore = new Vue({
   data: {
     userLogin: 'My Name',
-    userFullName: 'John Doe',
+    userFullName: '',
     reportName: '',
     reportParams:    [
                         {
@@ -62,7 +62,25 @@ export const globalStore = new Vue({
   }
 })
 
-//Vue.prototype.$userLogin = 'My Name';
+Vue.mixin({
+  methods: {
+
+       logout () {      
+      this.axios.get('http://localhost:3000/system_user_manager/user_logout?login=' + globalStore.userLogin)
+        .then(request => this.logoutSuccessful(request))
+        .catch(function (error) {
+          console.log('in error')
+          console.log(JSON.stringify(error))
+        })
+    },
+
+    logoutSuccessful (req) {
+        this.msg = req.data.message;
+        this.$router.replace(this.$route.query.redirect || '/');
+    } 
+
+  }
+})
 
 /* eslint-disable no-new */
 new Vue({

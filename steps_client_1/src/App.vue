@@ -37,8 +37,8 @@
                 <template slot="button-content">
                   <em>User</em>
                 </template>
-                <b-dropdown-item href="#">Profile</b-dropdown-item>
-                <b-dropdown-item href="#">Signout</b-dropdown-item>
+                <b-dropdown-item v-bind:to="'changePword'" href="#" >Change Password</b-dropdown-item>
+                <b-dropdown-item href="#" v-on:click="logout ()">Signout</b-dropdown-item>
               </b-nav-item-dropdown>
             </b-navbar-nav>
 
@@ -53,8 +53,17 @@
 </template>
 
 <script>
+import {globalStore} from './main.js'
+
 export default {
-  name: 'App'
+  name: 'App',
+
+  data () {
+    return {
+      user_name: globalStore.userFullName,
+      localvar: globalStore.userLogin
+    }
+  }
 }
 </script>
 

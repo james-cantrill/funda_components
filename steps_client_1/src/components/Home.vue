@@ -197,7 +197,7 @@ export default {
          globalStore.showIncludeCocFundedPrjctOnly = 0;
     },
      
-    logout () {      
+/*    logout () {      
       this.axios.get('http://localhost:3000/system_user_manager/user_logout?login=' + globalStore.userLogin)
         .then(request => this.logoutSuccessful(request))
         .catch(function (error) {
@@ -209,7 +209,7 @@ export default {
     logoutSuccessful (req) {
         this.msg = req.data.message;
         this.$router.replace(this.$route.query.redirect || '/');
-    } 
+    } */
   } 
 }
 </script>
