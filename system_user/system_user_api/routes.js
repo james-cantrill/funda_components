@@ -69,7 +69,7 @@ router.get('/system_user_manager/add_one_user', function (req, res) {
 });	//END router.get('/system_user_manager/add_one_user',
 
 router.get('/system_user_manager/change_password', function (req, res) {
-	
+	console.log ('In /system_user_manager/change_password');
 	act ({  role:'system_user_manager', 
 	        cmd:'change_password', 
 			_in_data: {
