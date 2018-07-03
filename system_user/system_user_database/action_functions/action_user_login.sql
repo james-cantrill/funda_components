@@ -33,6 +33,8 @@ DECLARE
 	_firstname	text;
 	_lastname	text;
 	
+	_user_state	text;
+	
 	_submited_login	text;	
 	_submited_password	text;
 	
@@ -42,25 +44,59 @@ DECLARE
 	_output_authorized_json	json;	-- output json  
 	_authorized_result	boolean;
 	
-	
-	
 BEGIN
 
--- Determine if tnhe calling user is authorized
+	-- Determine if tnhe calling user is authorized
 	_submited_login := (SELECT _in_data ->> 'login')::text;
 	
+-- Is the login in  the system
+	_sysuser_id := (	SELECT 
+						sysuser_id
+					FROM system_user_schema.system_users 
+					WHERE	login = lower(_submited_login)); 
+
+-- What is the user's state
+	IF _sysuser_id IS NOT NULL THEN
+		_user_state := (SELECT user_state 
+						FROM system_user_schema.system_user_state
+						WHERE sysuser_id = _sysuser_id);
+	END IF;
+	
+	-- Determine if the calling user is authorized	
 	_input_authorized_json :=	(SELECT json_build_object(
 							'login', _submited_login,
 							'service', 'system_user',
 							'action', 'user_login'
-							));
-	
-	_output_authorized_json := (SELECT * FROM system_user_schema.util_is_user_authorized (_input_authorized_json));
-	
+							));	
+	_output_authorized_json := (SELECT * FROM system_user_schema.util_is_user_authorized (_input_authorized_json));	
 	_authorized_result := (SELECT _output_authorized_json ->> 'authorized')::boolean;
 	
-	IF _authorized_result  THEN
 	
+	IF (SELECT _in_data ->> 'login')::text IS NULL THEN 
+			_message := (SELECT 'The login is missing, please resubmit with complete data.') ;
+		_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Failure',
+							'message', _message,
+							'login', (SELECT _in_data ->> 'login')::text
+							));
+	ELSIF _sysuser_id IS NULL OR NOT _authorized_result THEN	-- calling user is not authorized
+
+		_message := 'The user ' || _submited_login || ' IS NOT Authorized to access the system.';
+		_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Failure',
+							'message', _message,
+							'login', lower ((SELECT _in_data ->> 'login'))::text)
+							);
+	ELSIF _user_state = 'Logged In' THEN 
+		_message := 'The user ' || _submited_login || ' IS ALREADY logged in.';
+		_out_json :=  (SELECT json_build_object(
+							'result_indicator', 'Failure',
+							'message', _message,
+							'login', lower ((SELECT _in_data ->> 'login'))::text)
+							);
+	ELSE
+	
+		_sysuser_id := NULL;
 		_submited_password := (SELECT _in_data ->> 'password')::text;
 		
 		_sysuser_id := (	SELECT 
@@ -70,12 +106,12 @@ BEGIN
 							  AND	password = crypt(_submited_password, password)
 						);  
 		 
-		 
-		IF _sysuser_id IS NOT NULL THEN	-- the login was successful
+		IF _sysuser_id IS NOT NULL THEN	-- the login/password combination is valid the user can be logged in 
 		
 			_firstname := (SELECT firstname FROM system_user_schema.system_users WHERE sysuser_id = _sysuser_id);
 			_lastname := (SELECT lastname FROM system_user_schema.system_users WHERE sysuser_id = _sysuser_id);
 			
+			-- log user in
 			UPDATE	system_user_schema.system_user_state
 			   SET	
 					user_state = 'Logged In',
@@ -106,16 +142,7 @@ BEGIN
 								));
 
 		END IF;
-		
-	ELSE	-- calling user is not authorized
 
-		_message := 'The user ' || _submited_login || ' IS NOT Authorized to access the system.';
-
-		_out_json :=  (SELECT json_build_object(
-							'result_indicator', 'Failure',
-							'message', _message,
-							'login', lower ((SELECT _in_data ->> 'login'))::text)
-							);
 	END IF;		
 
 	
