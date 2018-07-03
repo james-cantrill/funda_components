@@ -16,9 +16,6 @@
                     <br>
                     <input type="password" v-model="password" placeholder="" class="input-block-level">
                     <br><br>
-                </div>
-
-                <div class="row" style="horizontal-align: center">
                     <button type="submit" class="btn btn-large btn-primary">Sign in </button>
                 </div>
             </form>
