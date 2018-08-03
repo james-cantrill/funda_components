@@ -35,3 +35,12 @@ BEGIN
 	RAISE NOTICE 'Result = %', (SELECT _output_json ->> 'result_indicator')::text;
 END$$;
 
+
+DO $$
+DECLARE  _output_json	json;
+BEGIN	
+	RAISE NOTICE 'Log out the master user';
+	_output_json := (SELECT * FROM system_user_schema.action_user_logout ('{"login": "muser"}'));
+	RAISE NOTICE 'Result = %', (SELECT _output_json ->> 'result_indicator')::text;
+	RAISE NOTICE 'Result = %', (SELECT _output_json ->> 'message')::text;
+END$$;
