@@ -39,6 +39,7 @@ DECLARE
 	_lastname	text;
 	_submited_login	text;	
 	_submited_new_password	text;
+	_old_password	text;
 	
 	--for calling the system_user_schema.util_is_user_authorized function to determine if tnhe calling user is authorized to add new users
 	_calling_user_state	text;
@@ -51,6 +52,8 @@ BEGIN
 
 	_submited_login := (SELECT _in_data ->> 'login')::text;
 	
+	--is the user whose password is  being changed in  the system
+	_sysuser_id := NULL;
 	_sysuser_id := (	SELECT 
 							sysuser_id
 						FROM system_user_schema.system_users 
