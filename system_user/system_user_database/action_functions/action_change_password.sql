@@ -108,7 +108,7 @@ BEGIN
 
 		ELSE	-- the username/password combination is not valid and an failure message will be returned
 		
-			_message := (SELECT 'Invalid username submitted. Please try again.') ;
+			_message := (SELECT 'Invalid username/password combination submitted. Please try again.') ;
 			
 			_out_json :=  (SELECT json_build_object(
 								'result_indicator', 'Failure',
