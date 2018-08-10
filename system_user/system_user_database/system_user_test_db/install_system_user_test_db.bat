@@ -23,6 +23,8 @@ REM install the objects
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d system_user_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\table_definitions\system_user_allowed_actions_history.sql 1>> install_system_user_test_db.log 2>>&1
 
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d system_user_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\table_definitions\system_user_last_active.sql 1>> install_system_user_test_db.log 2>>&1
+
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d system_user_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\action_functions\action_add_new_user.sql 1>> install_system_user_test_db.log 2>>&1
 
 "C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d system_user_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\action_functions\action_change_password.sql 1>> install_system_user_test_db.log 2>>&1
@@ -57,4 +59,4 @@ REM Install the master user
 
 REM **************************************************************************
 REM Install the test data
-"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d system_user_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\system_user_test_db\\install_system_user_test_data.sql  1> install_system_user_test_data.log 2>&1
+"C:\Program Files\PostgreSQL\9.6\bin\psql.exe" -h localhost -U postgres -d system_user_test_db  -p 5432 -f C:\funda_components\system_user\system_user_database\system_user_test_db\install_system_user_test_data.sql  1> install_system_user_test_data.log 2>&1
