@@ -65,13 +65,13 @@ export const globalStore = new Vue({
 Vue.mixin({
   methods: {
 
-       logout () {      
-      this.axios.get('http://localhost:3000/system_user_manager/user_logout?login=' + globalStore.userLogin)
-        .then(request => this.logoutSuccessful(request))
-        .catch(function (error) {
-          console.log('in error')
-          console.log(JSON.stringify(error))
-        })
+       logout () { 
+          this.axios.get('http://localhost:3000/system_user_manager/user_logout?login=' + globalStore.userLogin)
+            .then(request => this.logoutSuccessful(request))
+            .catch(function (error) {
+              console.log('in error')
+              console.log(JSON.stringify(error))
+            })
     },
 
     logoutSuccessful (req) {
