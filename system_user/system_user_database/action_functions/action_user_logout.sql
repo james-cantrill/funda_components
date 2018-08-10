@@ -64,6 +64,10 @@ BEGIN
 			WHERE	sysuser_id = _sysuser_id
 			;
 			
+			DELETE FROM system_user_schema.system_user_last_active
+			WHERE sysuser_id = _sysuser_id
+			;
+			
 			_message := (SELECT  _firstname || ' ' || _lastname || ', is logged out.');
 			
 			 _out_json :=  (SELECT json_build_object(

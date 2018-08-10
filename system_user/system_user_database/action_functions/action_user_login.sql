@@ -118,6 +118,16 @@ BEGIN
 					datetime_state_started = LOCALTIMESTAMP (0)
 			WHERE	sysuser_id = _sysuser_id
 			;
+			INSERT INTO system_user_schema.system_user_last_active (
+				sysuser_id,
+				login,
+				datetime_last_active
+				)
+			SELECT
+				_sysuser_id,
+				_submited_login,
+				clock_timestamp()
+			;
 			
 			_message := (SELECT  _firstname || ' ' || _lastname || ', is logged in.');
 			
