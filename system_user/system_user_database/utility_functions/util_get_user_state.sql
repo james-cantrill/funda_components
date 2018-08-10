@@ -1,8 +1,9 @@
 /* The function system_user_schema.util_get_user_state retuns the current state of the user
 * indicated by the _login parameter. If the submitted login doesn't correspond
 * to a system user it returns "Unknown"
-
-
+*
+* The function also records the time the function ran as the time the user was
+* last active on the system.
 */
 
 CREATE OR REPLACE FUNCTION system_user_schema.util_get_user_state (_login text) RETURNS text
@@ -32,6 +33,13 @@ BEGIN
 						WHERE	sysuser_id = _sysuser_id
 						);
 						
+		IF _user_state = 'Logged In' THEN
+			UPDATE system_user_schema.system_user_last_active
+			SET datetime_last_active = clock_timestamp()
+			WHERE sysuser_id = _sysuser_id
+			;
+		END IF;
+		
 	ELSE
 	
 		_user_state := 'Unknown';
