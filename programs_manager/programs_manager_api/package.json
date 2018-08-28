@@ -2,11 +2,10 @@
   "name": "programs_manager_api",
   "version": "1.0.0",
   "description": "The programs_manager_api is a microservice exposing the actions (functions) needed to manage the programs and organizations of a system. ",
- "scripts": {
+  "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node programs_manager_api.js"
   },
-
   "author": "Jim Cantrill",
   "license": "Apache-2.0",
   "dependencies": {
@@ -18,4 +17,4 @@
     "pg-promise": "^5.3.3",
     "seneca": "^3.4.3"
   }
-  }
+}
